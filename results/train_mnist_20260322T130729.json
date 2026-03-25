@@ -1,0 +1,46 @@
+{
+  "experiment": "train_mnist",
+  "timestamp": "2026-03-22T13:07:29.406770",
+  "config": {
+    "n_types": 8,
+    "type_dim": 8,
+    "hidden_bands": [
+      48,
+      48,
+      48,
+      48
+    ],
+    "n_epochs": 25,
+    "sparsity_weight": 0.1,
+    "device": "mps"
+  },
+  "results": {
+    "normal_mlp": {
+      "params": 118282,
+      "acc": 0.9833,
+      "time": 68.28582406044006
+    },
+    "grown": {
+      "params": 174540,
+      "genome_params": 226,
+      "acc": 0.9754,
+      "time": 305.8748300075531,
+      "hard_density": 0.02191692703547142,
+      "soft_density": 0.11559655131322674,
+      "active": 3816,
+      "total": 174112
+    },
+    "random_sparse": {
+      "params": 174314,
+      "acc": 0.9709,
+      "time": 94.60467410087585
+    },
+    "dense_skip": {
+      "params": 174314,
+      "acc": 0.9805,
+      "time": 96.92203092575073
+    }
+  },
+  "genome_state": "results/genome_mnist_20260322T130729.pt",
+  "total_time": 565.6873590946198
+}

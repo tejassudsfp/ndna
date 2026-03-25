@@ -1,0 +1,42 @@
+{
+  "experiment": "train_cifar10_cnn",
+  "timestamp": "2026-03-23T13:04:23.144894",
+  "config": {
+    "n_types": 8,
+    "type_dim": 8,
+    "n_bands": 8,
+    "n_epochs": 200,
+    "sparsity_weight": 0.01,
+    "hard_masks": true,
+    "device": "mps"
+  },
+  "results": {
+    "dense_resnet": {
+      "params": 175258,
+      "acc": 0.898,
+      "time": 0
+    },
+    "genome_cnn": {
+      "params": 87116,
+      "genome_params": 258,
+      "acc": 0.8893,
+      "time": 3820.4121420383453,
+      "hard_density": 0.4097731085018098,
+      "soft_density": 0.4463618970277126,
+      "active": 9283,
+      "total": 22654
+    },
+    "random_sparse_cnn": {
+      "params": 86858,
+      "acc": 0.8578,
+      "time": 2263.881537914276
+    },
+    "dense_skip_cnn": {
+      "params": 86858,
+      "acc": 0.8871,
+      "time": 2277.0640132427216
+    }
+  },
+  "genome_state": "results/genome_cnn_20260323T130423.pt",
+  "total_time": 8361.357693195343
+}

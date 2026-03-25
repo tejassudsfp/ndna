@@ -1,0 +1,47 @@
+{
+  "experiment": "rung3_transformer",
+  "timestamp": "2026-03-25T00:07:23.503570",
+  "config": {
+    "n_types": 8,
+    "type_dim": 8,
+    "n_bands": 8,
+    "hidden": 256,
+    "ff_dim": 512,
+    "n_layers": 6,
+    "n_heads": 4,
+    "max_len": 512,
+    "dense_epochs": 10,
+    "genome_epochs": 15,
+    "sparsity_weight": 0.005,
+    "device": "mps"
+  },
+  "results": {
+    "dense_transformer": {
+      "params": 11108354,
+      "acc": 0.84568,
+      "time": 5437.583262205124
+    },
+    "dense_skip_transformer": {
+      "params": 12090882,
+      "acc": 0.84676,
+      "time": 5454.99631690979
+    },
+    "genome_transformer": {
+      "params": 12089604,
+      "genome_params": 258,
+      "acc": 0.85052,
+      "time": 10896.796203136444,
+      "hard_density": 0.1681407174556213,
+      "soft_density": 0.22093897042523533,
+      "active": 363722,
+      "total": 2163200
+    },
+    "random_sparse_transformer": {
+      "params": 12089346,
+      "acc": 0.84656,
+      "time": 8145.075060844421
+    }
+  },
+  "genome_state": "results/genome_transformer_20260325T000723.pt",
+  "total_time": 29934.45084309578
+}
