@@ -17,7 +17,7 @@ from datetime import datetime
 from genome import Genome, GrownNetwork, RandomSparseNetwork, NormalMLP, DenseSkipNetwork
 
 torch.manual_seed(42)
-device = torch.device("mps" if torch.backends.mps.is_available() else "cpu")
+device = torch.device("cuda" if torch.cuda.is_available() else "mps" if torch.backends.mps.is_available() else "cpu")
 
 
 def load_mnist(bs=128):

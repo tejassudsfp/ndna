@@ -16,10 +16,17 @@ A tiny learned genome (< 300 parameters) that grows neural network topology thro
 
 226 to 258 genome parameters control up to 2.2M connections (8,384:1 compression).
 
-## Quick Start
+## Requirements
+
+Python >= 3.9. Tested on Apple M3 (MPS) and CPU. CUDA is also supported.
 
 ```bash
 pip install -r requirements.txt
+```
+
+## Quick Start
+
+```bash
 
 # Train genome on MNIST
 python3 run.py train
@@ -49,25 +56,26 @@ python3 run.py results
 ## Project Structure
 
 ```
-worldmodel/
-├── run.py                  # Entry point for all experiments
+ndna/
+├── run.py                   # Entry point for all experiments
 ├── genome/
-│   ├── __init__.py         # Exports Genome, GrownNetwork
-│   ├── model.py            # Genome, GrownNetwork, GenomeCNN, GenomeTransformer
-│   ├── baselines.py        # Dense, random sparse, dense skip baselines
-│   └── visualizer.py       # Topology visualization dashboard
+│   ├── __init__.py          # Exports all models and baselines
+│   ├── model.py             # Genome, GrownNetwork, GrownConvNetwork, GrownTransformer
+│   ├── baselines.py         # Dense, random sparse, dense skip baselines
+│   └── visualizer.py        # Topology visualization dashboard
 ├── experiments/
-│   ├── train_mnist.py      # MNIST MLP experiment
-│   ├── train_cifar10.py    # CIFAR-10 MLP experiment
-│   ├── train_cifar10_cnn.py# CIFAR-10 CNN experiment
-│   ├── transfer.py         # Fashion-MNIST -> MNIST transfer
-│   ├── transfer_cifar100.py# CIFAR-10 -> CIFAR-100 transfer
-│   └── rung3_transformer.py# IMDB transformer experiment
-├── figures/                # Paper figures (6 PNGs)
-├── results/                # Experiment outputs (JSON + checkpoints)
-├── paper_ndna.md           # Full paper
-├── paper_figures.py        # Figure generation script
-└── RESULTS_SUMMARY.md      # Experiment log and narrative
+│   ├── train_mnist.py       # MNIST MLP experiment
+│   ├── train_cifar10.py     # CIFAR-10 MLP experiment
+│   ├── train_cifar10_cnn.py # CIFAR-10 CNN experiment
+│   ├── transfer.py          # Fashion-MNIST -> MNIST transfer
+│   ├── transfer_cifar100.py # CIFAR-10 -> CIFAR-100 transfer
+│   └── rung3_transformer.py # IMDB transformer experiment
+├── figures/                 # Paper figures (6 PNGs)
+├── results/                 # Experiment outputs (JSON)
+├── paper_ndna.md            # Full paper
+├── paper_figures.py         # Figure generation script
+├── requirements.txt
+└── LICENSE
 ```
 
 ## Reproducing Experiments

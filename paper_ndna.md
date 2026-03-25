@@ -217,13 +217,9 @@ The frozen CIFAR-10 genome achieves **60.92%** on CIFAR-100, within 0.18% of a f
 
 NDNA beats random sparse by **+3.15%** at matched 44.6% density. Despite having half the parameters of Dense ResNet, the genome CNN comes within 0.87% of the ceiling. The genome discovered structured connectivity: dense back-end layers (groups 2 and 3 at near-100% density), sparse front-end (group 1 at lower density), and selective medium-range skip connections. This pattern mirrors hand-designed architectures where later layers need richer feature combinations.
 
-![Genome Dashboard](results/genome_viz.png)
+![Method Overview](figures/fig1_method_overview.png)
 
-*Figure 1: CIFAR-10 CNN genome dashboard showing (clockwise from top-left): type compatibility matrix revealing learned type affinities; topology map with connection density per band pair; top growth masks showing channel-level connectivity patterns; cell type distribution across bands showing positional type variation; and the network diagram illustrating emergent skip connections.*
-
-![Before and After Training](archive/genome_before_after.png)
-
-*Figure 2: Genome state before training (left, near-uniform random initialization) and after training (right, structured type compatibility and selective connectivity). The trained genome shows clear type clusters and asymmetric connection patterns.*
+*Figure 1: NDNA method overview. A compact genome (226-258 parameters) generates binary connectivity masks through type-based compatibility rules, which are applied to network weights. The genome is trained jointly with weights via gradient descent, with metabolic cost pressure toward efficient wiring.*
 
 ### 4.5 MLP Experiments
 
@@ -269,11 +265,15 @@ Compression ratio scales with network size. The genome is constant at 226 to 258
 
 ![Compression Scaling](figures/fig2_compression.png)
 
-*Figure 3: Compression ratio (possible connections per genome parameter) scales with network size. The genome is fixed at 226 to 258 parameters. Larger networks achieve higher compression.*
+*Figure 2: Compression ratio (possible connections per genome parameter) scales with network size. The genome is fixed at 226 to 258 parameters. Larger networks achieve higher compression.*
 
 ![Genome vs Random Sparse](figures/fig3_genome_vs_random.png)
 
-*Figure 4: Accuracy gap (NDNA minus Random Sparse) across all experiments. NDNA outperforms random sparsity on every task, with larger gaps on harder problems.*
+*Figure 3: Accuracy gap (NDNA minus Random Sparse) across all experiments. NDNA outperforms random sparsity on every task, with larger gaps on harder problems.*
+
+![Topology Convergence](figures/fig4_topology_convergence.png)
+
+*Figure 4: Topology convergence. CIFAR-10 and CIFAR-100 genomes, trained independently, discover similar connectivity structure. The difference matrix (right) shows the genomes agree on most band pairs.*
 
 ![Genome vs Dense](figures/fig5_genome_vs_dense.png)
 

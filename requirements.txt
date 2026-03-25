@@ -1,6 +1,6 @@
 torch>=2.0
 torchvision>=0.15
 datasets>=2.0
+transformers>=4.30
 matplotlib>=3.5
-markdown>=3.4
 numpy>=1.24

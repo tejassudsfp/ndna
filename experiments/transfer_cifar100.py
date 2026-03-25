@@ -31,7 +31,7 @@ from datetime import datetime
 from genome import Genome, GrownConvNetwork, DenseResNet, RandomSparseResNet
 
 torch.manual_seed(42)
-device = torch.device("mps" if torch.backends.mps.is_available() else "cpu")
+device = torch.device("cuda" if torch.cuda.is_available() else "mps" if torch.backends.mps.is_available() else "cpu")
 
 CHECKPOINT_PATH = 'results/_cifar100_transfer_checkpoint.json'
 NUM_CLASSES = 100
@@ -70,9 +70,12 @@ def evaluate(model, loader):
     return c / t
 
 
-def flush_mps():
+def flush_cache():
+    """Free cached GPU memory to prevent buildup."""
     if device.type == 'mps':
         torch.mps.empty_cache()
+    elif device.type == 'cuda':
+        torch.cuda.empty_cache()
 
 
 def save_checkpoint(results, genome_state_path=None):
@@ -122,7 +125,7 @@ def train_dense(model, tr, te, n_epochs=N_EPOCHS, lr=0.1):
         acc = evaluate(model, te)
         best = max(best, acc)
         sched.step()
-        flush_mps()
+        flush_cache()
         if ep % 10 == 0 or ep == n_epochs - 1:
             print(f"    Ep {ep:3d}: test={acc:.4f} best={best:.4f}")
     return best
@@ -154,7 +157,7 @@ def train_frozen_genome(model, tr, te, n_epochs=N_EPOCHS):
         acc = evaluate(model, te)
         best = max(best, acc)
         sched.step()
-        flush_mps()
+        flush_cache()
         if ep % 10 == 0 or ep == n_epochs - 1:
             print(f"    Ep {ep:3d}: test={acc:.4f} best={best:.4f}")
     return best
@@ -198,7 +201,7 @@ def train_fresh_genome(model, tr, te, n_epochs=N_EPOCHS, sparsity_weight=0.01):
         sched_weights.step()
         sched_genome.step()
 
-        flush_mps()
+        flush_cache()
         if ep % 10 == 0 or ep == n_epochs - 1:
             active, total, sd = model.count_effective()
             density = active / total if total > 0 else 0
@@ -223,7 +226,7 @@ def train_sparse(model, tr, te, n_epochs=N_EPOCHS, lr=0.1):
         acc = evaluate(model, te)
         best = max(best, acc)
         sched.step()
-        flush_mps()
+        flush_cache()
         if ep % 10 == 0 or ep == n_epochs - 1:
             print(f"    Ep {ep:3d}: test={acc:.4f} best={best:.4f}")
     return best
@@ -281,7 +284,7 @@ def run():
         t0 = time.time()
         acc = train_dense(m, tr, te)
         results['dense_resnet'] = {'params': p, 'acc': acc, 'time': time.time() - t0}
-        del m; flush_mps()
+        del m; flush_cache()
         save_checkpoint(results)
         print(f"    >> Checkpoint saved. Best: {acc:.4f}")
     else:
@@ -310,7 +313,7 @@ def run():
             'time': time.time() - t0, 'hard_density': density,
             'soft_density': sd, 'source': genome_path
         }
-        del m; flush_mps()
+        del m; flush_cache()
         save_checkpoint(results)
         print(f"    >> Checkpoint saved. Best: {acc:.4f}")
     else:
@@ -349,7 +352,7 @@ def run():
         torch.save(fresh_genome.state_dict(), fresh_path)
         save_checkpoint(results, fresh_path)
 
-        del m; flush_mps()
+        del m; flush_cache()
         print(f"    >> Checkpoint saved. Best: {acc:.4f}")
     else:
         print(f"\n  [3/4] FRESH GENOME: skipped (acc={results['fresh_genome']['acc']:.4f})")
@@ -363,7 +366,7 @@ def run():
         t0 = time.time()
         acc = train_sparse(m_rs, tr, te)
         results['random_sparse'] = {'params': p, 'acc': acc, 'time': time.time() - t0}
-        del m_rs; flush_mps()
+        del m_rs; flush_cache()
         save_checkpoint(results)
         print(f"    >> Checkpoint saved. Best: {acc:.4f}")
     else:

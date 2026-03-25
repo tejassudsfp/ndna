@@ -31,7 +31,7 @@ from datetime import datetime
 from genome import Genome, GrownConvNetwork, DenseResNet, RandomSparseResNet, DenseSkipResNet
 
 torch.manual_seed(42)
-device = torch.device("mps" if torch.backends.mps.is_available() else "cpu")
+device = torch.device("cuda" if torch.cuda.is_available() else "mps" if torch.backends.mps.is_available() else "cpu")
 
 CHECKPOINT_PATH = 'results/_cnn_checkpoint.json'
 
@@ -93,10 +93,12 @@ def clear_checkpoint():
         os.remove(CHECKPOINT_PATH)
 
 
-def flush_mps():
-    """Free cached MPS memory to prevent buildup."""
+def flush_cache():
+    """Free cached GPU memory to prevent buildup."""
     if device.type == 'mps':
         torch.mps.empty_cache()
+    elif device.type == 'cuda':
+        torch.cuda.empty_cache()
 
 
 def train_dense(model, tr, te, n_epochs=200, lr=0.1):
@@ -115,7 +117,7 @@ def train_dense(model, tr, te, n_epochs=200, lr=0.1):
         acc = evaluate(model, te)
         best = max(best, acc)
         sched.step()
-        flush_mps()
+        flush_cache()
         if ep % 10 == 0 or ep == n_epochs - 1:
             print(f"    Ep {ep:3d}: test={acc:.4f} best={best:.4f}")
     return best
@@ -168,7 +170,7 @@ def train_genome_cnn(model, tr, te, n_epochs=200, sparsity_weight=0.01):
         sched_weights.step()
         sched_genome.step()
 
-        flush_mps()
+        flush_cache()
         if ep % 10 == 0 or ep == n_epochs - 1:
             active, total, sd = model.count_effective()
             density = active / total if total > 0 else 0
@@ -194,7 +196,7 @@ def train_sparse_cnn(model, tr, te, n_epochs=200, lr=0.1):
         acc = evaluate(model, te)
         best = max(best, acc)
         sched.step()
-        flush_mps()
+        flush_cache()
         if ep % 10 == 0 or ep == n_epochs - 1:
             print(f"    Ep {ep:3d}: test={acc:.4f} best={best:.4f}")
     return best
@@ -230,7 +232,7 @@ def run():
         t0 = time.time()
         acc = train_dense(m, tr, te, n_epochs)
         results['dense_resnet'] = {'params': p, 'acc': acc, 'time': time.time() - t0}
-        del m; flush_mps()
+        del m; flush_cache()
         save_checkpoint(results)
         print(f"    >> Checkpoint saved. Best: {acc:.4f}")
     else:
@@ -255,7 +257,7 @@ def run():
         }
         print(f"    Final: hard={density:.1%} soft={sd:.1%}")
         m.describe_topology()
-        del m; flush_mps()
+        del m; flush_cache()
         # Save genome state
         os.makedirs('results', exist_ok=True)
         genome_path = f"results/genome_cnn_checkpoint.pt"
@@ -278,7 +280,7 @@ def run():
         t0 = time.time()
         acc = train_sparse_cnn(m_rs, tr, te, n_epochs)
         results['random_sparse_cnn'] = {'params': p, 'acc': acc, 'time': time.time() - t0}
-        del m_rs; flush_mps()
+        del m_rs; flush_cache()
         save_checkpoint(results)
         print(f"    >> Checkpoint saved. Best: {acc:.4f}")
     else:
@@ -293,7 +295,7 @@ def run():
         t0 = time.time()
         acc = train_sparse_cnn(m_ds, tr, te, n_epochs)
         results['dense_skip_cnn'] = {'params': p, 'acc': acc, 'time': time.time() - t0}
-        del m_ds; flush_mps()
+        del m_ds; flush_cache()
         save_checkpoint(results)
         print(f"    >> Checkpoint saved. Best: {acc:.4f}")
     else:

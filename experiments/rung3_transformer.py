@@ -38,7 +38,7 @@ from genome import (
 )
 
 torch.manual_seed(42)
-device = torch.device("mps" if torch.backends.mps.is_available() else "cpu")
+device = torch.device("cuda" if torch.cuda.is_available() else "mps" if torch.backends.mps.is_available() else "cpu")
 
 CHECKPOINT_PATH = 'results/_transformer_checkpoint.json'
 
@@ -80,9 +80,12 @@ def count_params(m):
     return sum(p.numel() for p in m.parameters() if p.requires_grad)
 
 
-def flush_mps():
+def flush_cache():
+    """Free cached GPU memory to prevent buildup."""
     if device.type == 'mps':
         torch.mps.empty_cache()
+    elif device.type == 'cuda':
+        torch.cuda.empty_cache()
 
 
 def evaluate(model, loader):
@@ -155,7 +158,7 @@ def train_dense_transformer(model, tr, te, n_epochs=10, lr=2e-4, accum_steps=2):
         acc = evaluate(model, te)
         best = max(best, acc)
         sched.step()
-        flush_mps()
+        flush_cache()
         print(f"    Ep {ep:2d}: test={acc:.4f} best={best:.4f}")
 
     return best
@@ -216,7 +219,7 @@ def train_genome_transformer(model, tr, te, n_epochs=15, lr=2e-4,
         best = max(best, acc)
         sched_weights.step()
         sched_genome.step()
-        flush_mps()
+        flush_cache()
 
         active, total, sd = model.count_effective()
         density = active / total if total > 0 else 0
@@ -260,7 +263,7 @@ def train_sparse_transformer(model, tr, te, n_epochs=10, lr=2e-4, accum_steps=2)
         acc = evaluate(model, te)
         best = max(best, acc)
         sched.step()
-        flush_mps()
+        flush_cache()
         print(f"    Ep {ep:2d}: test={acc:.4f} best={best:.4f}")
 
     return best
@@ -326,7 +329,7 @@ def run():
         except RuntimeError as e:
             if 'out of memory' in str(e).lower() or 'MPS' in str(e):
                 print(f"    OOM at max_len={MAX_LEN}. Retrying with max_len=256...")
-                del m; flush_mps()
+                del m; flush_cache()
                 MAX_LEN = 256
                 tr, te = load_imdb(max_len=MAX_LEN, batch_size=16)
                 m = DenseTransformer(hidden=hidden, ff_dim=ff_dim, n_layers=n_layers,
@@ -337,7 +340,7 @@ def run():
             else:
                 raise
         results['dense_transformer'] = {'params': p, 'acc': acc, 'time': time.time() - t0}
-        del m; flush_mps()
+        del m; flush_cache()
         save_checkpoint(results)
         print(f"    >> Checkpoint saved. Best: {acc:.4f}")
     else:
@@ -358,7 +361,7 @@ def run():
         except RuntimeError as e:
             if 'out of memory' in str(e).lower() or 'MPS' in str(e):
                 print(f"    OOM at max_len={MAX_LEN}. Retrying with max_len=256...")
-                del m; flush_mps()
+                del m; flush_cache()
                 MAX_LEN = 256
                 tr, te = load_imdb(max_len=MAX_LEN, batch_size=16)
                 if 'dense_transformer' in results:
@@ -381,7 +384,7 @@ def run():
         }
         print(f"    Final: hard={density:.1%} soft={sd:.1%}")
         m.describe_topology()
-        del m; flush_mps()
+        del m; flush_cache()
         # Save genome
         os.makedirs('results', exist_ok=True)
         genome_path = "results/genome_transformer_checkpoint.pt"
@@ -406,7 +409,7 @@ def run():
         t0 = time.time()
         acc = train_sparse_transformer(m, tr, te, n_epochs=10)
         results['random_sparse_transformer'] = {'params': p, 'acc': acc, 'time': time.time() - t0}
-        del m; flush_mps()
+        del m; flush_cache()
         save_checkpoint(results)
         print(f"    >> Checkpoint saved. Best: {acc:.4f}")
     else:
@@ -422,7 +425,7 @@ def run():
         t0 = time.time()
         acc = train_sparse_transformer(m, tr, te, n_epochs=10)
         results['dense_skip_transformer'] = {'params': p, 'acc': acc, 'time': time.time() - t0}
-        del m; flush_mps()
+        del m; flush_cache()
         save_checkpoint(results)
         print(f"    >> Checkpoint saved. Best: {acc:.4f}")
     else:

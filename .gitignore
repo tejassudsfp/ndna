@@ -1,8 +1,28 @@
+# Data (downloaded automatically on first run)
 data/
+
+# Python
 __pycache__/
 *.pyc
+*.pyo
+*.egg-info/
+
+# Environments
+.venv/
+env/
+venv/
+
+# Genome checkpoints (large binary files)
 results/*.pt
 results/genome_viz.png
+results/_*_checkpoint.json
+
+# Generated HTML
 paper_ndna.html
-.DS_Store
+
+# Archive (old experiments, not part of published work)
 archive/
+
+# OS
+.DS_Store
+Thumbs.db

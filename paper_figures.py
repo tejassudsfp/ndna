@@ -2,7 +2,7 @@
 Generate all figures for the NDNA paper.
 
 Reads results from results/*.json and produces publication-quality PNGs.
-Run from the worldmodel/ directory: python3 paper_figures.py
+Run from the ndna/ directory: python3 paper_figures.py
 """
 
 import json

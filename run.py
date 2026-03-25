@@ -18,7 +18,7 @@ import os
 import json
 import glob
 
-# Ensure we run from the worldmodel directory
+# Ensure we run from the ndna directory
 os.chdir(os.path.dirname(os.path.abspath(__file__)))
 
 
