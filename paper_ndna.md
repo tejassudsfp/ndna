@@ -39,7 +39,7 @@ Neural architecture search automates the discovery of network architectures. Zop
 
 ### Sparse Networks and Pruning
 
-The Lottery Ticket Hypothesis (Frankle and Carlin, 2018) demonstrated that dense networks contain sparse subnetworks that, when trained in isolation from their original initialization, match full network accuracy. Optimal Brain Damage (LeCun et al., 1989) and magnitude pruning (Han et al., 2015) remove weights from trained networks based on importance scores. RigL (Evci et al., 2020) and SET (Mocanu et al., 2018) train sparse networks directly by periodically reallocating connections. These methods operate on individual weight-level sparsity. NDNA generates structured sparsity patterns from a compact program, enabling topology transfer and compression ratios orders of magnitude higher than weight-level masks.
+The Lottery Ticket Hypothesis (Frankle and Carbin, 2018) demonstrated that dense networks contain sparse subnetworks that, when trained in isolation from their original initialization, match full network accuracy. Optimal Brain Damage (LeCun et al., 1989) and magnitude pruning (Han et al., 2015) remove weights from trained networks based on importance scores. RigL (Evci et al., 2020) and SET (Mocanu et al., 2018) train sparse networks directly by periodically reallocating connections. Hoefler et al. (2021) provide a comprehensive survey of sparsity methods, establishing dynamic sparse training (DST) as a general paradigm encompassing both pruning and growth strategies. These methods operate on individual weight-level sparsity. NDNA generates structured sparsity patterns from a compact program, enabling topology transfer and compression ratios orders of magnitude higher than weight-level masks.
 
 ### Indirect Encoding and Neuroevolution
 
@@ -225,8 +225,6 @@ The frozen CIFAR-10 genome achieves **60.92%** on CIFAR-100, within 0.18% of a f
 
 **IMDB Sentiment Classification.** Six-layer transformer encoder, hidden dimension 256, 4 attention heads, FF dimension 512, sequence length 512. Eight bands (embedding, 6 layers, classifier). 258 genome parameters. Split optimizer: AdamW (lr=2e-4) for weights, Adam (lr=0.01) for genome. 15 epochs, $\lambda = 0.005$. Temperature annealed 1.0 to 10.0.
 
-A critical architectural requirement emerged in this experiment. Our initial implementation used PyTorch's `nn.MultiheadAttention`, which left the attention output path unmasked. The genome had no reason to grow attention connections (they flowed freely), so it converged to 0% density and contributed nothing. We replaced `nn.MultiheadAttention` with manual multi-head attention, masking the output projection $W_O$ with the genome. This ensured every information path passes through a genome gate, forcing the genome to find useful wiring.
-
 **Table 5: Transformer Results on IMDB**
 
 | Model | Params | Accuracy |
@@ -279,7 +277,7 @@ Compression ratio scales with network size. The genome is constant at 226 to 258
 
 ![Genome vs Dense](figures/fig5_genome_vs_dense.png)
 
-*Figure 5: NDNA accuracy relative to the dense baseline across experiments. The genome progresses from slightly below dense on easy tasks (MNIST) to above dense on harder tasks (CIFAR-10 MLP, IMDB).*
+*Figure 5: NDNA accuracy relative to the dense baseline across experiments. The genome progresses from slightly below dense on easy tasks (MNIST) to above dense on harder tasks (CIFAR-10 MLP, IMDB). Note: the CIFAR-100 comparison (-6.06%) is between the genome CNN (93K params) and the Dense ResNet (181K params), a 2x parameter mismatch. The gap reflects the parameter budget difference, not a topology failure.*
 
 ![Transformer Connectivity](figures/fig6_transformer_heatmap.png)
 
@@ -319,7 +317,7 @@ If the genome were memorizing CIFAR-10-specific connectivity, it should fail on 
 
 ### 5.4 Limitations
 
-We identify five limitations of the current work:
+We identify six limitations of the current work:
 
 1. **Small-scale benchmarks.** All experiments use networks with fewer than 12 million parameters. Whether NDNA scales to billion-parameter models is unproven. The compression ratio trend (increasing with network size) is encouraging but not demonstrated at scale.
 
@@ -327,9 +325,11 @@ We identify five limitations of the current work:
 
 3. **Modest margins on some tasks.** The IMDB transformer gap of 0.39% over random sparse, while consistent with gaps on other tasks, is small enough that statistical significance would require multi-seed experiments.
 
-4. **No direct NAS comparison.** We compare against random sparsity and dense baselines but not against NAS-discovered architectures. NDNA's advantage over NAS would be in compute cost and transferability, not necessarily in peak accuracy.
+4. **Single seed.** All experiments use a single random seed (42). Multi-seed runs with variance reporting are planned. For the strongest results (CIFAR-100 transfer +7.01%, CIFAR-10 MLP +5.46%), the margins are large enough that seed variance is unlikely to flip the result. For IMDB (+0.39%), it might. We acknowledge this and present the result as suggestive rather than conclusive for that experiment.
 
-5. **Joint optimization.** The genome is trained jointly with network weights, unlike biological evolution where the genome evolves across generations while the brain develops within a lifetime. Separating these timescales could yield different dynamics.
+5. **No direct NAS comparison.** We compare against random sparsity and dense baselines but not against NAS-discovered architectures. NDNA's advantage over NAS would be in compute cost and transferability, not necessarily in peak accuracy.
+
+6. **Joint optimization.** The genome is trained jointly with network weights, unlike biological evolution where the genome evolves across generations while the brain develops within a lifetime. Separating these timescales could yield different dynamics.
 
 ## 6. Broader Impact and Future Directions
 
@@ -363,11 +363,13 @@ Bengio, Y., Leonard, N., and Courville, A. (2013). Estimating or propagating gra
 
 Evci, U., Gale, T., Menick, J., Castro, P.S., and Elsen, E. (2020). Rigging the Lottery: Making All Tickets Winners. In *Proceedings of the 37th International Conference on Machine Learning (ICML)*.
 
-Frankle, J. and Carlin, M. (2018). The Lottery Ticket Hypothesis: Finding Sparse, Trainable Neural Networks. In *International Conference on Learning Representations (ICLR)*.
+Frankle, J. and Carbin, M. (2018). The Lottery Ticket Hypothesis: Finding Sparse, Trainable Neural Networks. In *International Conference on Learning Representations (ICLR)*.
 
 Gaier, A. and Ha, D. (2019). Weight Agnostic Neural Networks. In *Advances in Neural Information Processing Systems (NeurIPS)*.
 
 Gruau, F. (1994). Neural Network Synthesis using Cellular Encoding and the Genetic Algorithm. *PhD Thesis, Ecole Normale Superieure de Lyon*.
+
+Hoefler, T., Alistarh, D., Ben-Nun, T., Dryden, N., and Peste, A. (2021). Sparsity in Deep Learning: Pruning and growth for efficient inference and training in neural networks. *Journal of Machine Learning Research*, 22(241), 1-124.
 
 Han, S., Pool, J., Tung, J., and Dally, W.J. (2015). Learning Both Weights and Connections for Efficient Neural Networks. In *Advances in Neural Information Processing Systems (NeurIPS)*.
 
@@ -419,9 +421,13 @@ The final NDNA design emerged after seven phases of experimentation spanning app
 
 **Phase 7: Default-Disconnected Breakthrough (Hours 14 to 14b).** The same type-based topology mechanism from Phase 4, but with compatibility matrix initialized negative (default disconnected) and metabolic cost pressure. Result: 97.54% at 2.2% density, beating random sparse by 8.02 percentage points on the original MNIST experiment. Skip connections emerged without being designed. The genome learned general wiring principles. Everything before this was searching for the right inductive bias; default-disconnected was it.
 
-## Appendix B: Hyperparameters
+## Appendix B: Transformer Implementation Note
 
-**Table B1: Genome Hyperparameters (constant across experiments)**
+The genome transformer requires manual multi-head attention rather than PyTorch's `nn.MultiheadAttention`. The standard module leaves the attention output path unmasked, giving the genome no reason to grow attention connections (they flow freely), so it converges to 0% density and contributes nothing. Replacing it with manual multi-head attention and masking the output projection $W_O$ ensures every information path passes through a genome gate, forcing the genome to find useful wiring. This is a prerequisite for the genome to function in transformer architectures.
+
+## Appendix C: Hyperparameters
+
+**Table C1: Genome Hyperparameters (constant across experiments)**
 
 | Parameter | Value |
 |-----------|-------|
@@ -436,7 +442,7 @@ The final NDNA design emerged after seven phases of experimentation spanning app
 | Type softmax temperature | 3.0 |
 | Random seed | 42 |
 
-**Table B2: Training Hyperparameters Per Experiment**
+**Table C2: Training Hyperparameters Per Experiment**
 
 | Experiment | Bands | Epochs | Weight Optimizer | Weight LR | Genome LR | $\lambda$ | Temp Range | Hard Masks |
 |------------|-------|--------|-----------------|-----------|-----------|-----------|------------|------------|
