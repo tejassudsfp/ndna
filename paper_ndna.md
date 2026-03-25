@@ -151,39 +151,62 @@ All experiments run on an Apple M3 MacBook Pro (8GB) using the MPS backend. Rand
 3. **Random Sparse**: same architecture as NDNA but with fixed random binary masks at matched density. The control that isolates the effect of learned vs random topology.
 4. **Dense Skip**: same skip-connection architecture as NDNA but with all masks set to 1.0 (no sparsity). Shows what the full skip architecture achieves without the genome's selective wiring.
 
-### 4.2 MLP Experiments
+### 4.2 Transformer Experiments
 
-**MNIST.** Input dimension 784 (28x28 grayscale). Four hidden bands of 48 neurons each (6 bands total, 226 genome parameters). 25 epochs, Adam optimizer, cosine annealing, sparsity weight $\lambda = 0.1$.
+**IMDB Sentiment Classification.** Six-layer transformer encoder, hidden dimension 256, 4 attention heads, FF dimension 512, sequence length 512. Eight bands (embedding, 6 layers, classifier). 258 genome parameters. Split optimizer: AdamW (lr=2e-4) for weights, Adam (lr=0.01) for genome. 15 epochs, $\lambda = 0.005$. Temperature annealed 1.0 to 10.0.
 
-**Table 1: MLP Results on MNIST**
+**Table 1: Transformer Results on IMDB**
 
-| Model | Params | Accuracy | Density |
-|-------|--------|----------|---------|
-| Normal MLP (h=128, 2 layers) | 118,282 | 98.33% | 100% |
-| Dense Skip | 174,314 | 98.05% | 100% |
-| **NDNA (Genome)** | **174,540** | **97.54%** | **11.6%** |
-| Random Sparse (11.6%) | 174,314 | 97.09% | 11.6% |
+| Model | Params | Accuracy |
+|-------|--------|----------|
+| Dense Transformer | 11,108,354 | 84.57% |
+| Dense Skip Transformer | 12,090,882 | 84.68% |
+| **NDNA Transformer** | **12,089,604** | **85.05%** |
+| Random Sparse (22.1%) | 12,089,346 | 84.66% |
 
-NDNA beats random sparse by **+0.45%** at 11.6% soft density. The genome (226 params) controls 174,112 possible connections at 770:1 compression. The genome achieves 97.54% using only 3,816 active connections (2.2% hard density), within 0.79% of the dense MLP ceiling.
+NDNA beats the dense transformer ceiling by **+0.48%** and random sparse by **+0.39%**. The genome discovered a non-trivial topology:
 
-**CIFAR-10 (MLP).** Input dimension 3072 (32x32x3 color). Four hidden bands of 128 neurons (6 bands, 226 genome parameters). 40 epochs, Adam, cosine annealing, $\lambda = 0.1$.
+**Table 2: Transformer Layer Connectivity (NDNA on IMDB)**
 
-**Table 2: MLP Results on CIFAR-10**
+| Connection | Type | Hard Density | Soft Density |
+|------------|------|-------------|--------------|
+| emb to L1 | Attention W_O | 100.0% | 99.9% |
+| emb to L1 | FF | 100.0% | 99.9% |
+| L1 to L2 | Attention W_O | 0.0% | 37.0% |
+| L1 to L2 | FF | 0.0% | 37.0% |
+| emb to L3 | Skip | 100.0% | 96.8% |
+| L3 to L4 | Attention W_O | 0.0% | 19.9% |
+| L3 to L4 | FF | 0.0% | 19.9% |
+| L4 to L5 | Attention W_O | 51.4% | 48.4% |
+| L4 to L5 | FF | 51.4% | 48.4% |
+| L6 to cls | Classifier | 100.0% | 100.0% |
 
-| Model | Params | Accuracy | Density |
-|-------|--------|----------|---------|
-| Normal MLP (h=256, 3 layers) | 920,842 | 54.32% | 100% |
-| Dense Skip | 1,707,530 | 51.27% | 100% |
-| **NDNA (Genome)** | **1,707,756** | **57.14%** | **4.6%** |
-| Random Sparse (4.6%) | 1,707,530 | 51.68% | 4.6% |
+The genome built a highway: full connectivity at entry (emb to L1), a 100% skip from embedding directly to L3 (bypassing L2 entirely), selective half-connectivity at L4 to L5, and full connectivity to the classifier. Layers 2, 5, and 6 received minimal or no new connections. The genome effectively reduced a 6-layer transformer to approximately 3 active layers with a skip highway, a structural simplification that improved accuracy.
 
-On the harder CIFAR-10 task, the genome advantage grows. NDNA beats random sparse by **+5.46%** and beats the dense MLP by **+2.82%**. Notably, the dense skip network (all connections active) performs worst, suggesting that unstructured full connectivity hurts on this task. The genome's selective wiring finds paths that neither random masks nor dense connectivity discover. Compression ratio: 7,553:1 (226 genome params controlling 1,707,008 connections).
+### 4.3 Transfer Experiments
 
-### 4.3 CNN Experiments
+**CIFAR-10 to CIFAR-100.** We freeze the CIFAR-10 trained genome and use its topology to train a network on CIFAR-100 (100 classes, 500 samples per class). Only network weights are trained; topology is fixed. 258 genome parameters. 250 epochs, SGD with momentum, cosine annealing.
+
+**Table 3: CNN Transfer from CIFAR-10 to CIFAR-100**
+
+| Model | Params | Accuracy | Notes |
+|-------|--------|----------|-------|
+| Dense ResNet | 181,108 | 67.16% | Ceiling |
+| Fresh Genome (CIFAR-100) | 92,966 | 61.10% | Genome + weights trained on C100 |
+| Frozen Genome (CIFAR-10) | 92,966 | 60.92% | Genome frozen from C10 |
+| Random Sparse (47.6%) | 92,708 | 53.91% | Matched density |
+
+The frozen CIFAR-10 genome achieves **60.92%** on CIFAR-100, within 0.18% of a fresh genome trained from scratch on CIFAR-100 (61.10%). Both genome variants beat random sparse by **+7.01%** and **+7.19%** respectively. The topology learned on 10 classes transfers to 100 classes with negligible loss, while random wiring at the same density loses 7 percentage points.
+
+**Topology convergence.** The CIFAR-10 genome (41.0% hard density) and independently trained CIFAR-100 genome (40.2% hard density) converge to similar overall density and share structural features: dense back-end connectivity, sparse front-end, and selective skip connections. The CIFAR-100 genome additionally grows a long-range skip from input to group 3, likely needed for the finer-grained 100-class discrimination.
+
+**Fashion-MNIST to MNIST.** In a separate MLP transfer experiment, a genome trained on Fashion-MNIST (clothing images) was frozen and used to grow a network for MNIST (digit images). The frozen genome achieved 97.54% on MNIST, compared to 97.37% for a fresh MNIST genome and 11.35% for random sparse at matched density. The genome learned general structural principles (e.g., where to place skip connections, which layers to keep sparse) that transfer across visual domains.
+
+### 4.4 CNN Experiments
 
 **CIFAR-10.** Eight bands: input (3ch), two conv groups of 16ch, two of 32ch, two of 64ch, and a 10-class FC layer. 258 genome parameters. Hard binary masks via straight-through estimator. Split optimizer: SGD with momentum (lr=0.1) for CNN weights, Adam (lr=0.001) for genome. 200 epochs, $\lambda = 0.01$. Temperature annealed from 1.0 to 10.0.
 
-**Table 3: CNN Results on CIFAR-10**
+**Table 4: CNN Results on CIFAR-10**
 
 | Model | Params | Accuracy | Density |
 |-------|--------|----------|---------|
@@ -202,56 +225,33 @@ NDNA beats random sparse by **+3.15%** at matched 44.6% density. Despite having 
 
 *Figure 2: Genome state before training (left, near-uniform random initialization) and after training (right, structured type compatibility and selective connectivity). The trained genome shows clear type clusters and asymmetric connection patterns.*
 
-### 4.4 Transfer Experiments
+### 4.5 MLP Experiments
 
-**CIFAR-10 to CIFAR-100.** We freeze the CIFAR-10 trained genome and use its topology to train a network on CIFAR-100 (100 classes, 500 samples per class). Only network weights are trained; topology is fixed. 258 genome parameters. 250 epochs, SGD with momentum, cosine annealing.
+**MNIST.** Input dimension 784 (28x28 grayscale). Four hidden bands of 48 neurons each (6 bands total, 226 genome parameters). 25 epochs, Adam optimizer, cosine annealing, sparsity weight $\lambda = 0.1$.
 
-**Table 4: CNN Transfer from CIFAR-10 to CIFAR-100**
+**Table 5: MLP Results on MNIST**
 
-| Model | Params | Accuracy | Notes |
-|-------|--------|----------|-------|
-| Dense ResNet | 181,108 | 67.16% | Ceiling |
-| Fresh Genome (CIFAR-100) | 92,966 | 61.10% | Genome + weights trained on C100 |
-| Frozen Genome (CIFAR-10) | 92,966 | 60.92% | Genome frozen from C10 |
-| Random Sparse (47.6%) | 92,708 | 53.91% | Matched density |
+| Model | Params | Accuracy | Density |
+|-------|--------|----------|---------|
+| Normal MLP (h=128, 2 layers) | 118,282 | 98.33% | 100% |
+| Dense Skip | 174,314 | 98.05% | 100% |
+| **NDNA (Genome)** | **174,540** | **97.54%** | **11.6%** |
+| Random Sparse (11.6%) | 174,314 | 97.09% | 11.6% |
 
-The frozen CIFAR-10 genome achieves **60.92%** on CIFAR-100, within 0.18% of a fresh genome trained from scratch on CIFAR-100 (61.10%). Both genome variants beat random sparse by **+7.01%** and **+7.19%** respectively. The topology learned on 10 classes transfers to 100 classes with negligible loss, while random wiring at the same density loses 7 percentage points.
+NDNA beats random sparse by **+0.45%** at 11.6% soft density. The genome (226 params) controls 174,112 possible connections at 770:1 compression. The genome achieves 97.54% using only 3,816 active connections (2.2% hard density), within 0.79% of the dense MLP ceiling.
 
-**Topology convergence.** The CIFAR-10 genome (41.0% hard density) and independently trained CIFAR-100 genome (40.2% hard density) converge to similar overall density and share structural features: dense back-end connectivity, sparse front-end, and selective skip connections. The CIFAR-100 genome additionally grows a long-range skip from input to group 3, likely needed for the finer-grained 100-class discrimination.
+**CIFAR-10 (MLP).** Input dimension 3072 (32x32x3 color). Four hidden bands of 128 neurons (6 bands, 226 genome parameters). 40 epochs, Adam, cosine annealing, $\lambda = 0.1$.
 
-**Fashion-MNIST to MNIST.** In a separate MLP transfer experiment, a genome trained on Fashion-MNIST (clothing images) was frozen and used to grow a network for MNIST (digit images). The frozen genome achieved 97.54% on MNIST, compared to 97.37% for a fresh MNIST genome and 11.35% for random sparse at matched density. The genome learned general structural principles (e.g., where to place skip connections, which layers to keep sparse) that transfer across visual domains.
+**Table 6: MLP Results on CIFAR-10**
 
-### 4.5 Transformer Experiments
+| Model | Params | Accuracy | Density |
+|-------|--------|----------|---------|
+| Normal MLP (h=256, 3 layers) | 920,842 | 54.32% | 100% |
+| Dense Skip | 1,707,530 | 51.27% | 100% |
+| **NDNA (Genome)** | **1,707,756** | **57.14%** | **4.6%** |
+| Random Sparse (4.6%) | 1,707,530 | 51.68% | 4.6% |
 
-**IMDB Sentiment Classification.** Six-layer transformer encoder, hidden dimension 256, 4 attention heads, FF dimension 512, sequence length 512. Eight bands (embedding, 6 layers, classifier). 258 genome parameters. Split optimizer: AdamW (lr=2e-4) for weights, Adam (lr=0.01) for genome. 15 epochs, $\lambda = 0.005$. Temperature annealed 1.0 to 10.0.
-
-**Table 5: Transformer Results on IMDB**
-
-| Model | Params | Accuracy |
-|-------|--------|----------|
-| Dense Transformer | 11,108,354 | 84.57% |
-| Dense Skip Transformer | 12,090,882 | 84.68% |
-| **NDNA Transformer** | **12,089,604** | **85.05%** |
-| Random Sparse (22.1%) | 12,089,346 | 84.66% |
-
-NDNA beats the dense transformer ceiling by **+0.48%** and random sparse by **+0.39%**. The genome discovered a non-trivial topology:
-
-**Table 6: Transformer Layer Connectivity (NDNA on IMDB)**
-
-| Connection | Type | Hard Density | Soft Density |
-|------------|------|-------------|--------------|
-| emb to L1 | Attention W_O | 100.0% | 99.9% |
-| emb to L1 | FF | 100.0% | 99.9% |
-| L1 to L2 | Attention W_O | 0.0% | 37.0% |
-| L1 to L2 | FF | 0.0% | 37.0% |
-| emb to L3 | Skip | 100.0% | 96.8% |
-| L3 to L4 | Attention W_O | 0.0% | 19.9% |
-| L3 to L4 | FF | 0.0% | 19.9% |
-| L4 to L5 | Attention W_O | 51.4% | 48.4% |
-| L4 to L5 | FF | 51.4% | 48.4% |
-| L6 to cls | Classifier | 100.0% | 100.0% |
-
-The genome built a highway: full connectivity at entry (emb to L1), a 100% skip from embedding directly to L3 (bypassing L2 entirely), selective half-connectivity at L4 to L5, and full connectivity to the classifier. Layers 2, 5, and 6 received minimal or no new connections. The genome effectively reduced a 6-layer transformer to approximately 3 active layers with a skip highway, a structural simplification that improved accuracy.
+On the harder CIFAR-10 task, the genome advantage grows. NDNA beats random sparse by **+5.46%** and beats the dense MLP by **+2.82%**. Notably, the dense skip network (all connections active) performs worst, suggesting that unstructured full connectivity hurts on this task. The genome's selective wiring finds paths that neither random masks nor dense connectivity discover. Compression ratio: 7,553:1 (226 genome params controlling 1,707,008 connections).
 
 ### 4.6 Compression Analysis
 
