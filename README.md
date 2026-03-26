@@ -106,11 +106,13 @@ Experiments download datasets automatically to `data/` on first run.
 
 The genome and network weights are trained jointly with standard backpropagation.
 
-## Paper
+## Paper & Pre-trained Genomes
 
 [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.19230474.svg)](https://doi.org/10.5281/zenodo.19230474)
 
-Full paper with methodology, results, and analysis: [`paper_ndna.md`](paper_ndna.md) | [PDF](paper_ndna.pdf)
+Full paper: [PDF](paper_ndna.pdf) | [Zenodo](https://doi.org/10.5281/zenodo.19230474)
+
+Pre-trained genomes: [Hugging Face](https://huggingface.co/tejassuds/ndna-genome)
 
 ## Author
 
