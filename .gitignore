@@ -19,6 +19,12 @@ results/_*_checkpoint.json
 
 # Generated HTML
 paper_ndna.html
+_paper_tmp.*
+
+# Node (PDF generation)
+node_modules/
+package.json
+package-lock.json
 
 # Archive (old experiments, not part of published work)
 archive/

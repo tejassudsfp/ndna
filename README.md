@@ -108,7 +108,9 @@ The genome and network weights are trained jointly with standard backpropagation
 
 ## Paper
 
-Full paper with methodology, results, and analysis: [`paper_ndna.md`](paper_ndna.md)
+[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.19230474.svg)](https://doi.org/10.5281/zenodo.19230474)
+
+Full paper with methodology, results, and analysis: [`paper_ndna.md`](paper_ndna.md) | [PDF](paper_ndna.pdf)
 
 ## Author
 
@@ -122,7 +124,8 @@ tejas@fandesk.ai
 @article{sudarshan2026ndna,
   title={Neural DNA: A Compact Genome for Growing Network Architecture},
   author={Sudarshan, Tejas Parthasarathi},
-  year={2026}
+  year={2026},
+  doi={10.5281/zenodo.19230474}
 }
 ```
 
