@@ -5,7 +5,7 @@
 *Chennai, India*
 *tejas@fandesk.ai | tejassuds.com*
 *Code: https://github.com/tejassudsfp/ndna*
-*DOI: 10.5281/zenodo.19230474*
+*DOI: 10.5281/zenodo.19248389*
 
 ---
 

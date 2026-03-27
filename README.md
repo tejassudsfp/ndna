@@ -108,9 +108,9 @@ The genome and network weights are trained jointly with standard backpropagation
 
 ## Paper & Pre-trained Genomes
 
-[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.19230474.svg)](https://doi.org/10.5281/zenodo.19230474)
+[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.19248389.svg)](https://doi.org/10.5281/zenodo.19248389)
 
-Full paper: [PDF](paper_ndna.pdf) | [Zenodo](https://doi.org/10.5281/zenodo.19230474)
+Full paper: [PDF](paper_ndna.pdf) | [Zenodo](https://doi.org/10.5281/zenodo.19248389)
 
 Pre-trained genomes: [Hugging Face](https://huggingface.co/tejassuds/ndna-genome)
 
@@ -127,7 +127,7 @@ tejas@fandesk.ai
   title={Neural DNA: A Compact Genome for Growing Network Architecture},
   author={Sudarshan, Tejas Parthasarathi},
   year={2026},
-  doi={10.5281/zenodo.19230474}
+  doi={10.5281/zenodo.19248389}
 }
 ```
 

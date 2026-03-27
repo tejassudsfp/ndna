@@ -417,7 +417,7 @@ def convert_title_block(html):
   <div class="affiliation">Chennai, India</div>
   <div class="contact"><a href="mailto:tejas@fandesk.ai">tejas@fandesk.ai</a> | <a href="https://tejassuds.com">tejassuds.com</a></div>
   <div class="contact">Code: <a href="https://github.com/tejassudsfp/ndna">github.com/tejassudsfp/ndna</a></div>
-  <div class="contact">DOI: <a href="https://doi.org/10.5281/zenodo.19230474">10.5281/zenodo.19230474</a></div>
+  <div class="contact">DOI: <a href="https://doi.org/10.5281/zenodo.19248389">10.5281/zenodo.19248389</a></div>
 </div>
 <hr class="title-sep" />
 '''
