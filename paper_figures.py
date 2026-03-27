@@ -66,6 +66,10 @@ def load_results():
     with open('results/rung3_transformer_20260325T000723.json') as f:
         data['imdb'] = json.load(f)
 
+    # Moving MNIST Video
+    with open('results/rung4_video_20260327T023647.json') as f:
+        data['video'] = json.load(f)
+
     return data
 
 
@@ -75,6 +79,7 @@ def fig2_compression(data):
         ('CIFAR-10\nCNN', 258, 22654),
         ('CIFAR-100\nCNN', 258, 43084),
         ('MNIST\nMLP', 226, 174112),
+        ('Moving\nMNIST', 374, 307300),
         ('CIFAR-10\nMLP', 226, 1707008),
         ('IMDB\nTransformer', 258, 2163200),
     ]
@@ -105,7 +110,7 @@ def fig2_compression(data):
 
     # Add genome param annotation
     ax1.axhline(y=0, color='gray', linewidth=0.5)
-    ax1.text(0.02, 0.95, 'Genome: 226-258 params (constant)',
+    ax1.text(0.02, 0.95, 'Genome: 226-374 params',
              transform=ax1.transAxes, fontsize=10, va='top',
              bbox=dict(boxstyle='round,pad=0.3', facecolor='lightyellow', alpha=0.8))
 
@@ -116,8 +121,13 @@ def fig2_compression(data):
 
 
 def fig3_genome_vs_random(data):
-    """Figure 3: Accuracy gap (genome - random sparse) across experiments."""
-    experiments = [
+    """Figure 3: Performance gap (genome - random sparse) across experiments.
+
+    Accuracy experiments use percentage point difference.
+    Video experiment uses relative MSE improvement.
+    """
+    # Accuracy experiments (percentage point gap)
+    acc_experiments = [
         ('MNIST\nMLP',
          data['mnist']['results']['grown']['acc'],
          data['mnist']['results']['random_sparse']['acc']),
@@ -135,29 +145,37 @@ def fig3_genome_vs_random(data):
          data['imdb']['results']['random_sparse_transformer']['acc']),
     ]
 
-    names = [e[0] for e in experiments]
-    gaps = [(e[1] - e[2]) * 100 for e in experiments]
+    names = [e[0] for e in acc_experiments]
+    gaps = [(e[1] - e[2]) * 100 for e in acc_experiments]
 
-    fig, ax = plt.subplots(figsize=(9, 5))
+    # Video experiment (relative MSE improvement)
+    video_genome_mse = data['video']['results']['genome']['mse']
+    video_random_mse = data['video']['results']['random_sparse']['mse']
+    video_gap = (video_random_mse - video_genome_mse) / video_random_mse * 100
+    names.append('Moving\nMNIST*')
+    gaps.append(video_gap)
+
+    fig, ax = plt.subplots(figsize=(10, 5))
 
     colors = [COLORS['genome'] if g > 0 else COLORS['random'] for g in gaps]
     bars = ax.bar(range(len(names)), gaps, color=colors, alpha=0.85,
                   edgecolor='white', linewidth=1.5, width=0.6)
 
-    ax.set_ylabel('Accuracy Gap (NDNA - Random Sparse) in %')
+    ax.set_ylabel('Performance Gap (NDNA better) in %')
     ax.set_xticks(range(len(names)))
     ax.set_xticklabels(names)
-    ax.set_title('NDNA vs Random Sparse: Accuracy Gap Across Experiments')
+    ax.set_title('NDNA vs Random Sparse: Performance Gap Across Experiments')
     ax.axhline(y=0, color='gray', linewidth=0.8, linestyle='-')
 
     for bar, gap in zip(bars, gaps):
-        y_pos = bar.get_height() + 0.15 if gap > 0 else bar.get_height() - 0.35
+        y_pos = bar.get_height() + 0.3 if gap > 0 else bar.get_height() - 0.35
         ax.text(bar.get_x() + bar.get_width() / 2, y_pos,
-                f'+{gap:.2f}%', ha='center', va='bottom' if gap > 0 else 'top',
+                f'+{gap:.1f}%', ha='center', va='bottom' if gap > 0 else 'top',
                 fontsize=10, fontweight='bold')
 
-    ax.text(0.02, 0.95, 'NDNA wins on every experiment',
-            transform=ax.transAxes, fontsize=10, va='top',
+    ax.text(0.02, 0.95, 'NDNA wins on every experiment\n'
+            '*Moving MNIST: relative MSE improvement (lower MSE = better)',
+            transform=ax.transAxes, fontsize=9, va='top',
             bbox=dict(boxstyle='round,pad=0.3', facecolor='lightyellow', alpha=0.8))
 
     plt.tight_layout()
@@ -257,7 +275,7 @@ def fig4_topology_convergence(data):
 
 
 def fig5_genome_vs_dense(data):
-    """Figure 5: Genome accuracy relative to dense baseline."""
+    """Figure 5: Genome performance relative to dense baseline."""
     experiments = [
         ('MNIST\nMLP',
          data['mnist']['results']['grown']['acc'],
@@ -278,6 +296,15 @@ def fig5_genome_vs_dense(data):
 
     names = [e[0] for e in experiments]
     gaps = [(e[1] - e[2]) * 100 for e in experiments]
+
+    # Video: relative MSE gap. Lower MSE = better.
+    # Genome MSE 62.23, Dense MSE 62.15. Genome is 0.12% worse.
+    # For consistency (positive = genome better), this is slightly negative.
+    video_genome_mse = data['video']['results']['genome']['mse']
+    video_dense_mse = data['video']['results']['dense']['mse']
+    video_gap = -(video_genome_mse - video_dense_mse) / video_dense_mse * 100
+    names.append('Moving\nMNIST*')
+    gaps.append(video_gap)
 
     fig, ax = plt.subplots(figsize=(9, 5))
 
@@ -396,7 +423,7 @@ def fig1_method_overview():
     ax.text(1.75, 3.1, 'Compatibility C (8x8)', fontsize=8, ha='center')
     ax.text(1.75, 2.7, 'Band Types (Lx8 each)', fontsize=8, ha='center')
     ax.text(1.75, 2.3, 'Scale, Penalty (2)', fontsize=8, ha='center')
-    ax.text(1.75, 1.7, '226-258 params', fontsize=10, fontweight='bold',
+    ax.text(1.75, 1.7, '226-374 params', fontsize=10, fontweight='bold',
             ha='center', color=COLORS['accent'])
 
     # Arrow 1
@@ -473,6 +500,116 @@ def fig1_method_overview():
     print(f'  Saved {OUT}/fig1_method_overview.png')
 
 
+def fig7_temporal_mask(data):
+    """Figure 7: Learned temporal attention mask from video experiment."""
+    import torch
+    import sys
+    sys.path.insert(0, '.')
+
+    genome_path = data['video'].get('genome_state', 'results/genome_video_20260327T023647.pt')
+    if not os.path.exists(genome_path):
+        print(f'  SKIP fig7: {genome_path} not found')
+        return
+
+    from experiments.rung4_video import SpatiotemporalGenome
+    genome = SpatiotemporalGenome()
+    state = torch.load(genome_path, weights_only=True)
+    genome.load_state_dict(state)
+
+    with torch.no_grad():
+        tm = genome.temporal_mask(10, temperature=10.0).numpy()
+
+    fig, ax = plt.subplots(figsize=(7, 6))
+    im = ax.imshow(tm, cmap='viridis', vmin=0, vmax=1, aspect='auto')
+    ax.set_xlabel('Source Frame')
+    ax.set_ylabel('Target Frame')
+    ax.set_title('Learned Temporal Attention Mask (374-param genome)')
+    ax.set_xticks(range(10))
+    ax.set_yticks(range(10))
+
+    # Add text annotations
+    for i in range(10):
+        for j in range(10):
+            color = 'white' if tm[i, j] < 0.5 else 'black'
+            ax.text(j, i, f'{tm[i,j]:.2f}', ha='center', va='center',
+                    fontsize=8, color=color)
+
+    fig.colorbar(im, ax=ax, fraction=0.046, pad=0.04, label='Attention Weight')
+
+    ax.text(0.02, 0.02, 'Recent frames get strong attention.\n'
+            'Distant frames are pruned.',
+            transform=ax.transAxes, fontsize=9, va='bottom',
+            bbox=dict(boxstyle='round,pad=0.3', facecolor='lightyellow', alpha=0.9))
+
+    plt.tight_layout()
+    plt.savefig(f'{OUT}/fig7_temporal_mask.png')
+    plt.close()
+    print(f'  Saved {OUT}/fig7_temporal_mask.png')
+
+
+def fig8_spatial_decay(data):
+    """Figure 8: Spatial attention decay with distance."""
+    import torch
+    import sys
+    sys.path.insert(0, '.')
+
+    genome_path = data['video'].get('genome_state', 'results/genome_video_20260327T023647.pt')
+    if not os.path.exists(genome_path):
+        print(f'  SKIP fig8: {genome_path} not found')
+        return
+
+    from experiments.rung4_video import SpatiotemporalGenome
+    genome = SpatiotemporalGenome()
+    state = torch.load(genome_path, weights_only=True)
+    genome.load_state_dict(state)
+
+    with torch.no_grad():
+        sm = genome.spatial_mask(64, temperature=10.0).numpy()
+
+    # Compute distance vs attention strength
+    grid_size = 8
+    distances = {}
+    for i in range(64):
+        for j in range(64):
+            ri, ci = divmod(i, grid_size)
+            rj, cj = divmod(j, grid_size)
+            dist = abs(ri - rj) + abs(ci - cj)
+            if dist not in distances:
+                distances[dist] = []
+            distances[dist].append(sm[i, j])
+
+    dists_sorted = sorted(distances.keys())
+    means = [np.mean(distances[d]) for d in dists_sorted]
+    stds = [np.std(distances[d]) for d in dists_sorted]
+
+    fig, ax = plt.subplots(figsize=(8, 5))
+
+    # Scatter individual points (subsampled for clarity)
+    for d in dists_sorted:
+        vals = distances[d]
+        subsample = vals[::max(1, len(vals)//50)]
+        ax.scatter([d]*len(subsample), subsample, alpha=0.1, s=8,
+                   color=COLORS['genome'])
+
+    ax.plot(dists_sorted, means, 'o-', color=COLORS['transfer'], linewidth=2.5,
+            markersize=7, label='Mean', zorder=5)
+
+    ax.set_xlabel('Manhattan Distance Between Patches')
+    ax.set_ylabel('Attention Strength')
+    ax.set_title('Spatial Attention Decays with Distance (Genome-Learned)')
+    ax.legend()
+
+    ax.text(0.98, 0.95, f'Nearby: {means[0]:.3f}\nFar: {means[-1]:.3f}\n'
+            f'Decay: {(means[0]-means[-1])/means[0]*100:.0f}%',
+            transform=ax.transAxes, fontsize=10, va='top', ha='right',
+            bbox=dict(boxstyle='round,pad=0.3', facecolor='lightyellow', alpha=0.8))
+
+    plt.tight_layout()
+    plt.savefig(f'{OUT}/fig8_spatial_decay.png')
+    plt.close()
+    print(f'  Saved {OUT}/fig8_spatial_decay.png')
+
+
 def main():
     print('Generating NDNA paper figures...')
     print()
@@ -485,6 +622,8 @@ def main():
     fig4_topology_convergence(data)
     fig5_genome_vs_dense(data)
     fig6_transformer_heatmap(data)
+    fig7_temporal_mask(data)
+    fig8_spatial_decay(data)
 
     print()
     print(f'All figures saved to {OUT}/')

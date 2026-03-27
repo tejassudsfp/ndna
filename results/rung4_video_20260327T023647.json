@@ -1,0 +1,64 @@
+{
+  "experiment": "rung4_video",
+  "timestamp": "2026-03-27T02:36:47.447352",
+  "config": {
+    "architecture": "divided_spacetime_attention",
+    "genome_type": "factored_spatiotemporal",
+    "temporal": {
+      "n_types": 4,
+      "type_dim": 4,
+      "n_bands": 5
+    },
+    "spatial": {
+      "n_types": 4,
+      "type_dim": 4,
+      "n_bands": 5
+    },
+    "depth": {
+      "n_types": 8,
+      "type_dim": 8,
+      "n_bands": 6
+    },
+    "hidden": 128,
+    "ff_dim": 256,
+    "n_layers": 4,
+    "n_heads": 4,
+    "n_frames": 10,
+    "img_size": 64,
+    "patch_size": 8,
+    "batch_size": 32,
+    "dense_epochs": 30,
+    "genome_epochs": 50,
+    "sparsity_weight": 0.005,
+    "device": "mps"
+  },
+  "results": {
+    "dense": {
+      "params": 820416,
+      "mse": 62.154408,
+      "time": 1200
+    },
+    "genome": {
+      "params": 919094,
+      "genome_params": 374,
+      "mse": 62.22639025878906,
+      "time": 1756.3392918109894,
+      "hard_density": 0.18733485193621868,
+      "soft_density": 0.111109319369412,
+      "active": 57568,
+      "total": 307300
+    },
+    "random_sparse": {
+      "params": 918720,
+      "mse": 79.4431841430664,
+      "time": 1047.6073520183563
+    },
+    "dense_skip": {
+      "params": 918720,
+      "mse": 62.08974261474609,
+      "time": 972.3705191612244
+    }
+  },
+  "genome_state": "results/genome_video_20260327T023647.pt",
+  "total_time": 4976.31716299057
+}
