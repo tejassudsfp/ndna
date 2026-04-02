@@ -588,3 +588,429 @@ class DenseSkipTransformer(nn.Module):
             pooled = acts[-1].mean(dim=1)
 
         return self.classifier(pooled)
+
+
+# --- GPT-2 baselines ---
+
+
+class DenseGPT2(nn.Module):
+    """Standard GPT-2 (no genome masks). The ceiling baseline.
+
+    Identical architecture to GrownGPT2 but without any masks on W_o or FF1.
+    Uses pre-norm, GELU, weight-tied LM head, causal attention.
+    """
+
+    def __init__(self, vocab_size=50257, hidden=768, ff_dim=3072,
+                 n_layers=12, n_heads=12, max_len=1024):
+        super().__init__()
+        self.vocab_size = vocab_size
+        self.hidden = hidden
+        self.ff_dim = ff_dim
+        self.n_layers = n_layers
+        self.n_heads = n_heads
+        self.head_dim = hidden // n_heads
+        self.max_len = max_len
+
+        assert hidden % n_heads == 0
+
+        self.token_emb = nn.Embedding(vocab_size, hidden)
+        self.pos_emb = nn.Embedding(max_len, hidden)
+        self.drop = nn.Dropout(0.0)
+
+        self.ln1s = nn.ModuleList()
+        self.W_qs = nn.ModuleList()
+        self.W_ks = nn.ModuleList()
+        self.W_vs = nn.ModuleList()
+        self.W_os = nn.ModuleList()
+        self.ln2s = nn.ModuleList()
+        self.ff1s = nn.ModuleList()
+        self.ff2s = nn.ModuleList()
+
+        for _ in range(n_layers):
+            self.ln1s.append(nn.LayerNorm(hidden))
+            self.W_qs.append(nn.Linear(hidden, hidden))
+            self.W_ks.append(nn.Linear(hidden, hidden))
+            self.W_vs.append(nn.Linear(hidden, hidden))
+            self.W_os.append(nn.Linear(hidden, hidden, bias=False))
+            self.ln2s.append(nn.LayerNorm(hidden))
+            self.ff1s.append(nn.Linear(hidden, ff_dim))
+            self.ff2s.append(nn.Linear(ff_dim, hidden))
+
+        self.ln_f = nn.LayerNorm(hidden)
+        self.scale = self.head_dim ** -0.5
+
+        self._init_weights()
+
+    def _init_weights(self):
+        for module in self.modules():
+            if isinstance(module, nn.Linear):
+                torch.nn.init.normal_(module.weight, mean=0.0, std=0.02)
+                if module.bias is not None:
+                    torch.nn.init.zeros_(module.bias)
+            elif isinstance(module, nn.Embedding):
+                torch.nn.init.normal_(module.weight, mean=0.0, std=0.02)
+            elif isinstance(module, nn.LayerNorm):
+                torch.nn.init.ones_(module.weight)
+                torch.nn.init.zeros_(module.bias)
+
+        scale = 1.0 / math.sqrt(2 * self.n_layers)
+        for i in range(self.n_layers):
+            self.W_os[i].weight.data *= scale
+            self.ff2s[i].weight.data *= scale
+
+    def forward(self, input_ids, targets=None):
+        B, L = input_ids.shape
+        assert L <= self.max_len
+
+        positions = torch.arange(L, device=input_ids.device)
+        x = self.token_emb(input_ids) + self.pos_emb(positions)
+        x = self.drop(x)
+
+        for i in range(self.n_layers):
+            ln_x = self.ln1s[i](x)
+            Q = self.W_qs[i](ln_x).view(B, L, self.n_heads, self.head_dim).transpose(1, 2)
+            K = self.W_ks[i](ln_x).view(B, L, self.n_heads, self.head_dim).transpose(1, 2)
+            V = self.W_vs[i](ln_x).view(B, L, self.n_heads, self.head_dim).transpose(1, 2)
+            attn_out = F.scaled_dot_product_attention(Q, K, V, is_causal=True)
+            attn_out = attn_out.transpose(1, 2).contiguous().view(B, L, self.hidden)
+            attn_out = self.W_os[i](attn_out)
+            x = x + attn_out
+
+            ln_x = self.ln2s[i](x)
+            ff_out = F.gelu(self.ff1s[i](ln_x))
+            ff_out = self.ff2s[i](ff_out)
+            x = x + ff_out
+
+        x = self.ln_f(x)
+        logits = F.linear(x, self.token_emb.weight)
+
+        loss = None
+        if targets is not None:
+            loss = F.cross_entropy(logits.view(-1, self.vocab_size), targets.view(-1))
+        return logits, loss
+
+    @torch.no_grad()
+    def generate(self, input_ids, max_new_tokens=100, temperature=1.0, top_k=None):
+        for _ in range(max_new_tokens):
+            idx_cond = input_ids if input_ids.size(1) <= self.max_len else input_ids[:, -self.max_len:]
+            logits, _ = self(idx_cond)
+            logits = logits[:, -1, :] / temperature
+            if top_k is not None:
+                v, _ = torch.topk(logits, min(top_k, logits.size(-1)))
+                logits[logits < v[:, [-1]]] = float('-inf')
+            probs = F.softmax(logits, dim=-1)
+            next_id = torch.multinomial(probs, num_samples=1)
+            input_ids = torch.cat([input_ids, next_id], dim=1)
+        return input_ids
+
+
+class RandomSparseGPT2(nn.Module):
+    """GPT-2 with fixed random binary masks on W_o and FF1. The critical control.
+
+    Same architecture as GrownGPT2 but masks are random and frozen.
+    Density is matched to the genome's final soft density.
+    """
+
+    def __init__(self, density, vocab_size=50257, hidden=768, ff_dim=3072,
+                 n_layers=12, n_heads=12, max_len=1024):
+        super().__init__()
+        self.vocab_size = vocab_size
+        self.hidden = hidden
+        self.ff_dim = ff_dim
+        self.n_layers = n_layers
+        self.n_heads = n_heads
+        self.head_dim = hidden // n_heads
+        self.max_len = max_len
+
+        assert hidden % n_heads == 0
+
+        self.token_emb = nn.Embedding(vocab_size, hidden)
+        self.pos_emb = nn.Embedding(max_len, hidden)
+        self.drop = nn.Dropout(0.0)
+
+        self.ln1s = nn.ModuleList()
+        self.W_qs = nn.ModuleList()
+        self.W_ks = nn.ModuleList()
+        self.W_vs = nn.ModuleList()
+        self.W_os = nn.ModuleList()
+        self.ln2s = nn.ModuleList()
+        self.ff1s = nn.ModuleList()
+        self.ff2s = nn.ModuleList()
+
+        for i in range(n_layers):
+            self.ln1s.append(nn.LayerNorm(hidden))
+            self.W_qs.append(nn.Linear(hidden, hidden))
+            self.W_ks.append(nn.Linear(hidden, hidden))
+            self.W_vs.append(nn.Linear(hidden, hidden))
+            self.W_os.append(nn.Linear(hidden, hidden, bias=False))
+            self.ln2s.append(nn.LayerNorm(hidden))
+            self.ff1s.append(nn.Linear(hidden, ff_dim))
+            self.ff2s.append(nn.Linear(ff_dim, hidden))
+            # Fixed random masks
+            wo_mask = (torch.rand(hidden, hidden) < density).float()
+            self.register_buffer(f'wo_mask_{i}', wo_mask)
+            ff_mask = (torch.rand(ff_dim, hidden) < density).float()
+            self.register_buffer(f'ff_mask_{i}', ff_mask)
+
+        self.ln_f = nn.LayerNorm(hidden)
+        self.scale = self.head_dim ** -0.5
+
+        self._init_weights()
+
+    def _init_weights(self):
+        for module in self.modules():
+            if isinstance(module, nn.Linear):
+                torch.nn.init.normal_(module.weight, mean=0.0, std=0.02)
+                if module.bias is not None:
+                    torch.nn.init.zeros_(module.bias)
+            elif isinstance(module, nn.Embedding):
+                torch.nn.init.normal_(module.weight, mean=0.0, std=0.02)
+            elif isinstance(module, nn.LayerNorm):
+                torch.nn.init.ones_(module.weight)
+                torch.nn.init.zeros_(module.bias)
+
+        scale = 1.0 / math.sqrt(2 * self.n_layers)
+        for i in range(self.n_layers):
+            self.W_os[i].weight.data *= scale
+            self.ff2s[i].weight.data *= scale
+
+    def forward(self, input_ids, targets=None):
+        B, L = input_ids.shape
+        assert L <= self.max_len
+
+        positions = torch.arange(L, device=input_ids.device)
+        x = self.token_emb(input_ids) + self.pos_emb(positions)
+        x = self.drop(x)
+
+        for i in range(self.n_layers):
+            ln_x = self.ln1s[i](x)
+            Q = self.W_qs[i](ln_x).view(B, L, self.n_heads, self.head_dim).transpose(1, 2)
+            K = self.W_ks[i](ln_x).view(B, L, self.n_heads, self.head_dim).transpose(1, 2)
+            V = self.W_vs[i](ln_x).view(B, L, self.n_heads, self.head_dim).transpose(1, 2)
+            attn_out = F.scaled_dot_product_attention(Q, K, V, is_causal=True)
+            attn_out = attn_out.transpose(1, 2).contiguous().view(B, L, self.hidden)
+            wo_mask = getattr(self, f'wo_mask_{i}')
+            attn_out = F.linear(attn_out, self.W_os[i].weight * wo_mask)
+            x = x + attn_out
+
+            ln_x = self.ln2s[i](x)
+            ff_mask = getattr(self, f'ff_mask_{i}')
+            ff_out = F.linear(ln_x, self.ff1s[i].weight * ff_mask, self.ff1s[i].bias)
+            ff_out = F.gelu(ff_out)
+            ff_out = self.ff2s[i](ff_out)
+            x = x + ff_out
+
+        x = self.ln_f(x)
+        logits = F.linear(x, self.token_emb.weight)
+
+        loss = None
+        if targets is not None:
+            loss = F.cross_entropy(logits.view(-1, self.vocab_size), targets.view(-1))
+        return logits, loss
+
+    @torch.no_grad()
+    def generate(self, input_ids, max_new_tokens=100, temperature=1.0, top_k=None):
+        for _ in range(max_new_tokens):
+            idx_cond = input_ids if input_ids.size(1) <= self.max_len else input_ids[:, -self.max_len:]
+            logits, _ = self(idx_cond)
+            logits = logits[:, -1, :] / temperature
+            if top_k is not None:
+                v, _ = torch.topk(logits, min(top_k, logits.size(-1)))
+                logits[logits < v[:, [-1]]] = float('-inf')
+            probs = F.softmax(logits, dim=-1)
+            next_id = torch.multinomial(probs, num_samples=1)
+            input_ids = torch.cat([input_ids, next_id], dim=1)
+        return input_ids
+
+
+# --- Pruned GPT-2 (Phase 2: physically smaller model) ---
+
+
+class PrunedGPT2(nn.Module):
+    """GPT-2 with physically smaller layers based on genome-discovered topology.
+
+    Each layer has a different FF dimension based on what the genome kept.
+    Dead neurons are gone entirely. Genuinely fewer parameters.
+    """
+
+    def __init__(self, vocab_size=50257, hidden=768, n_layers=12, n_heads=12,
+                 max_len=1024, ff_dims=None):
+        super().__init__()
+        self.vocab_size = vocab_size
+        self.hidden = hidden
+        self.n_layers = n_layers
+        self.n_heads = n_heads
+        self.head_dim = hidden // n_heads
+        self.max_len = max_len
+        self.ff_dims = ff_dims or [3072] * n_layers
+
+        assert hidden % n_heads == 0
+
+        self.token_emb = nn.Embedding(vocab_size, hidden)
+        self.pos_emb = nn.Embedding(max_len, hidden)
+        self.drop = nn.Dropout(0.0)
+
+        self.ln1s = nn.ModuleList()
+        self.W_qs = nn.ModuleList()
+        self.W_ks = nn.ModuleList()
+        self.W_vs = nn.ModuleList()
+        self.W_os = nn.ModuleList()
+        self.ln2s = nn.ModuleList()
+        self.ff1s = nn.ModuleList()
+        self.ff2s = nn.ModuleList()
+
+        for i in range(n_layers):
+            self.ln1s.append(nn.LayerNorm(hidden))
+            self.W_qs.append(nn.Linear(hidden, hidden))
+            self.W_ks.append(nn.Linear(hidden, hidden))
+            self.W_vs.append(nn.Linear(hidden, hidden))
+            self.W_os.append(nn.Linear(hidden, hidden, bias=False))
+            self.ln2s.append(nn.LayerNorm(hidden))
+            self.ff1s.append(nn.Linear(hidden, self.ff_dims[i]))
+            self.ff2s.append(nn.Linear(self.ff_dims[i], hidden))
+
+        self.ln_f = nn.LayerNorm(hidden)
+
+    def forward(self, input_ids, targets=None):
+        B, L = input_ids.shape
+        assert L <= self.max_len
+
+        positions = torch.arange(L, device=input_ids.device)
+        x = self.token_emb(input_ids) + self.pos_emb(positions)
+        x = self.drop(x)
+
+        for i in range(self.n_layers):
+            ln_x = self.ln1s[i](x)
+            Q = self.W_qs[i](ln_x).view(B, L, self.n_heads, self.head_dim).transpose(1, 2)
+            K = self.W_ks[i](ln_x).view(B, L, self.n_heads, self.head_dim).transpose(1, 2)
+            V = self.W_vs[i](ln_x).view(B, L, self.n_heads, self.head_dim).transpose(1, 2)
+            attn_out = F.scaled_dot_product_attention(Q, K, V, is_causal=True)
+            attn_out = attn_out.transpose(1, 2).contiguous().view(B, L, self.hidden)
+            attn_out = self.W_os[i](attn_out)
+            x = x + attn_out
+
+            ln_x = self.ln2s[i](x)
+            ff_out = F.gelu(self.ff1s[i](ln_x))
+            ff_out = self.ff2s[i](ff_out)
+            x = x + ff_out
+
+        x = self.ln_f(x)
+        logits = F.linear(x, self.token_emb.weight)
+
+        loss = None
+        if targets is not None:
+            loss = F.cross_entropy(logits.view(-1, self.vocab_size), targets.view(-1))
+        return logits, loss
+
+    @torch.no_grad()
+    def generate(self, input_ids, max_new_tokens=100, temperature=1.0, top_k=None):
+        for _ in range(max_new_tokens):
+            idx_cond = input_ids if input_ids.size(1) <= self.max_len else input_ids[:, -self.max_len:]
+            logits, _ = self(idx_cond)
+            logits = logits[:, -1, :] / temperature
+            if top_k is not None:
+                v, _ = torch.topk(logits, min(top_k, logits.size(-1)))
+                logits[logits < v[:, [-1]]] = float('-inf')
+            probs = F.softmax(logits, dim=-1)
+            next_id = torch.multinomial(probs, num_samples=1)
+            input_ids = torch.cat([input_ids, next_id], dim=1)
+        return input_ids
+
+
+def extract_pruned_model(genome_model, threshold=0.5):
+    """Extract a PrunedGPT2 from a trained GrownGPT2.
+
+    Reads the genome's masks, identifies dead FF neurons (rows where
+    mean mask value is below threshold), builds a physically smaller model,
+    and transfers the surviving trained weights.
+
+    Returns:
+        pruned: A PrunedGPT2 with genuinely fewer parameters
+        stats: Dict with per-layer pruning statistics
+    """
+    gm = genome_model
+    n_layers = gm.n_layers
+    hidden = gm.hidden
+    ff_dim = gm.ff_dim
+
+    ff_dims = []
+    kept_ff_indices = []
+    stats = {'layers': [], 'original_ff_dim': ff_dim}
+
+    with torch.no_grad():
+        for i in range(n_layers):
+            ff_mask = gm.genome.growth_mask(i, i + 1, hidden, ff_dim)
+            row_importance = ff_mask.mean(dim=1)
+
+            keep = (row_importance > threshold).nonzero(as_tuple=True)[0]
+
+            # Ensure at least 10% of neurons survive
+            if len(keep) < ff_dim // 10:
+                _, top_idx = row_importance.topk(ff_dim // 10)
+                keep = top_idx.sort().values
+
+            ff_dims.append(len(keep))
+            kept_ff_indices.append(keep)
+
+            stats['layers'].append({
+                'layer': i + 1,
+                'original_ff': ff_dim,
+                'pruned_ff': len(keep),
+                'kept_pct': len(keep) / ff_dim * 100,
+            })
+
+    stats['ff_dims'] = ff_dims
+
+    # Parameter counts
+    original_ff_params = n_layers * (ff_dim * hidden + ff_dim + ff_dim * hidden)
+    pruned_ff_params = sum(d * hidden + d + d * hidden for d in ff_dims)
+    stats['original_ff_params'] = original_ff_params
+    stats['pruned_ff_params'] = pruned_ff_params
+    stats['ff_param_reduction'] = (1 - pruned_ff_params / original_ff_params) * 100
+
+    non_ff_params = sum(
+        p.numel() for name, p in gm.named_parameters()
+        if 'ff1' not in name and 'ff2' not in name and 'genome' not in name
+    )
+    stats['total_original'] = non_ff_params + original_ff_params
+    stats['total_pruned'] = non_ff_params + pruned_ff_params
+    stats['total_reduction'] = (1 - stats['total_pruned'] / stats['total_original']) * 100
+
+    # Build pruned model and transfer weights
+    device = next(gm.parameters()).device
+    pruned = PrunedGPT2(
+        vocab_size=gm.vocab_size, hidden=hidden, n_layers=n_layers,
+        n_heads=gm.n_heads, max_len=gm.max_len, ff_dims=ff_dims,
+    ).to(device)
+
+    with torch.no_grad():
+        pruned.token_emb.weight.copy_(gm.token_emb.weight)
+        pruned.pos_emb.weight.copy_(gm.pos_emb.weight)
+        pruned.ln_f.weight.copy_(gm.ln_f.weight)
+        pruned.ln_f.bias.copy_(gm.ln_f.bias)
+
+        for i in range(n_layers):
+            keep = kept_ff_indices[i]
+
+            pruned.W_qs[i].weight.copy_(gm.W_qs[i].weight)
+            pruned.W_qs[i].bias.copy_(gm.W_qs[i].bias)
+            pruned.W_ks[i].weight.copy_(gm.W_ks[i].weight)
+            pruned.W_ks[i].bias.copy_(gm.W_ks[i].bias)
+            pruned.W_vs[i].weight.copy_(gm.W_vs[i].weight)
+            pruned.W_vs[i].bias.copy_(gm.W_vs[i].bias)
+            pruned.W_os[i].weight.copy_(gm.W_os[i].weight)
+
+            pruned.ln1s[i].weight.copy_(gm.ln1s[i].weight)
+            pruned.ln1s[i].bias.copy_(gm.ln1s[i].bias)
+            pruned.ln2s[i].weight.copy_(gm.ln2s[i].weight)
+            pruned.ln2s[i].bias.copy_(gm.ln2s[i].bias)
+
+            # FF1: keep only surviving rows
+            pruned.ff1s[i].weight.copy_(gm.ff1s[i].weight[keep])
+            pruned.ff1s[i].bias.copy_(gm.ff1s[i].bias[keep])
+
+            # FF2: keep only surviving columns
+            pruned.ff2s[i].weight.copy_(gm.ff2s[i].weight[:, keep])
+            pruned.ff2s[i].bias.copy_(gm.ff2s[i].bias)
+
+    return pruned, stats

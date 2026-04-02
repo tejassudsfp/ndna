@@ -1,0 +1,103 @@
+============================================================
+  RUNG 5: GPT-2 WITH GENOME-CONTROLLED CONNECTIVITY
+  354 parameters grow GPT-2.
+============================================================
+  Config: full
+  Device: cuda
+  Dtype: bfloat16
+  Layers: 12, Hidden: 768, FF: 3072
+  Block size: 1024, Batch: 12
+  Grad accum: 40
+  Tokens/iter: 491,520
+  Max iters: 100,000
+  Dataset: openwebtext
+
+============================================================
+  Training: dense
+============================================================
+  Total params: 124,430,592
+  Compiling model with torch.compile...
+  Resuming from iter 0...
+  iter      0 | train 11.0001 | val 11.0011 | lr 0.00e+00 | 23297 tok/s
+  iter   1000 | train 4.5356 | val 4.5246 | lr 3.00e-04 | 153815 tok/s
+  iter   2000 | train 3.7820 | val 3.7656 | lr 6.00e-04 | 154464 tok/s
+  iter   3000 | train 3.5258 | val 3.5330 | lr 6.00e-04 | 154665 tok/s
+  iter   4000 | train 3.3956 | val 3.4248 | lr 5.99e-04 | 154770 tok/s
+  iter   5000 | train 3.3480 | val 3.3513 | lr 5.99e-04 | 154846 tok/s
+  iter   6000 | train 3.2985 | val 3.3005 | lr 5.98e-04 | 154896 tok/s
+  iter   7000 | train 3.2611 | val 3.2654 | lr 5.97e-04 | 154929 tok/s
+  iter   8000 | train 3.2251 | val 3.2394 | lr 5.95e-04 | 154953 tok/s
+  iter   9000 | train 3.2084 | val 3.2160 | lr 5.93e-04 | 154979 tok/s
+  iter  10000 | train 3.1755 | val 3.2046 | lr 5.91e-04 | 155003 tok/s
+  iter  11000 | train 3.1573 | val 3.1822 | lr 5.89e-04 | 155023 tok/s
+  iter  12000 | train 3.1579 | val 3.1593 | lr 5.86e-04 | 155040 tok/s
+  iter  13000 | train 3.1372 | val 3.1360 | lr 5.83e-04 | 155049 tok/s
+  iter  14000 | train 3.1479 | val 3.1400 | lr 5.80e-04 | 155058 tok/s
+  iter  15000 | train 3.1136 | val 3.1214 | lr 5.77e-04 | 155071 tok/s
+Terminated
+============================================================
+  RUNG 5: GPT-2 WITH GENOME-CONTROLLED CONNECTIVITY
+  354 parameters grow GPT-2.
+============================================================
+  Config: full
+  Device: cuda
+  Dtype: bfloat16
+  Layers: 12, Hidden: 768, FF: 3072
+  Block size: 1024, Batch: 12
+  Grad accum: 40
+  Tokens/iter: 491,520
+  Max iters: 100,000
+  Dataset: openwebtext
+
+============================================================
+  Training: genome
+============================================================
+  Genome params: 354
+  Total params: 124,430,946
+  Compiling model with torch.compile...
+  iter      0 | train 11.2600 | val 11.2592 | lr 0.00e+00 | 9949 tok/s | hard=0.0% soft=3.7% temp=1.0
+W0330 11:55:29.850000 127579738091520 torch/_dynamo/convert_frame.py:762] [0/8] torch._dynamo hit config.cache_size_limit (8)
+W0330 11:55:29.850000 127579738091520 torch/_dynamo/convert_frame.py:762] [0/8]    function: 'forward' (/workspace/ndna/genome/model.py:775)
+W0330 11:55:29.850000 127579738091520 torch/_dynamo/convert_frame.py:762] [0/8]    last reason: GLOBAL_STATE changed: grad_mode 
+W0330 11:55:29.850000 127579738091520 torch/_dynamo/convert_frame.py:762] [0/8] To log all recompilation reasons, use TORCH_LOGS="recompiles".
+W0330 11:55:29.850000 127579738091520 torch/_dynamo/convert_frame.py:762] [0/8] To diagnose recompilation issues, see https://pytorch.org/docs/main/torch.compiler_troubleshooting.html.
+W0330 11:55:56.962000 127579738091520 torch/_dynamo/convert_frame.py:762] [1/8] torch._dynamo hit config.cache_size_limit (8)
+W0330 11:55:56.962000 127579738091520 torch/_dynamo/convert_frame.py:762] [1/8]    function: '_causal_attention' (/workspace/ndna/genome/model.py:746)
+W0330 11:55:56.962000 127579738091520 torch/_dynamo/convert_frame.py:762] [1/8]    last reason: L['layer_idx'] == 0                                         
+W0330 11:55:56.962000 127579738091520 torch/_dynamo/convert_frame.py:762] [1/8] To log all recompilation reasons, use TORCH_LOGS="recompiles".
+W0330 11:55:56.962000 127579738091520 torch/_dynamo/convert_frame.py:762] [1/8] To diagnose recompilation issues, see https://pytorch.org/docs/main/torch.compiler_troubleshooting.html.
+W0330 11:56:18.647000 127579738091520 torch/_dynamo/convert_frame.py:762] [2/8] torch._dynamo hit config.cache_size_limit (8)
+W0330 11:56:18.647000 127579738091520 torch/_dynamo/convert_frame.py:762] [2/8]    function: '_get_mask' (/workspace/ndna/genome/model.py:733)
+W0330 11:56:18.647000 127579738091520 torch/_dynamo/convert_frame.py:762] [2/8]    last reason: L['src_band'] == 0                                          
+W0330 11:56:18.647000 127579738091520 torch/_dynamo/convert_frame.py:762] [2/8] To log all recompilation reasons, use TORCH_LOGS="recompiles".
+W0330 11:56:18.647000 127579738091520 torch/_dynamo/convert_frame.py:762] [2/8] To diagnose recompilation issues, see https://pytorch.org/docs/main/torch.compiler_troubleshooting.html.
+W0330 11:56:40.671000 127579738091520 torch/_dynamo/convert_frame.py:762] [3/8] torch._dynamo hit config.cache_size_limit (8)
+W0330 11:56:40.671000 127579738091520 torch/_dynamo/convert_frame.py:762] [3/8]    function: 'growth_mask' (/workspace/ndna/genome/model.py:85)
+W0330 11:56:40.671000 127579738091520 torch/_dynamo/convert_frame.py:762] [3/8]    last reason: L['temperature'] == 1.00144                                 
+W0330 11:56:40.671000 127579738091520 torch/_dynamo/convert_frame.py:762] [3/8] To log all recompilation reasons, use TORCH_LOGS="recompiles".
+W0330 11:56:40.671000 127579738091520 torch/_dynamo/convert_frame.py:762] [3/8] To diagnose recompilation issues, see https://pytorch.org/docs/main/torch.compiler_troubleshooting.html.
+/workspace/run_train.sh: line 4:  3865 Killed                  PYTHONUNBUFFERED=1 python3 experiments/rung5_gpt2.py --config full --model genome
+============================================================
+  RUNG 5: GPT-2 WITH GENOME-CONTROLLED CONNECTIVITY
+  354 parameters grow GPT-2.
+============================================================
+  Config: full
+  Device: cuda
+  Dtype: bfloat16
+  Layers: 12, Hidden: 768, FF: 3072
+  Block size: 1024, Batch: 12
+  Grad accum: 40
+  Tokens/iter: 491,520
+  Max iters: 100,000
+  Dataset: openwebtext
+
+  WARNING: No genome results yet. Sparse will use default density 10%.
+
+============================================================
+  Training: sparse
+============================================================
+  Matched density: 0.1000
+  Total params: 124,430,592
+  Compiling model with torch.compile...
+/workspace/run_train.sh: line 5:  8004 Killed                  PYTHONUNBUFFERED=1 python3 experiments/rung5_gpt2.py --config full --model sparse
+=== ALL DONE ===

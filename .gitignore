@@ -1,5 +1,5 @@
-# Data (downloaded automatically on first run)
-data/
+# Data (downloaded automatically on first run - root level only)
+/data/
 
 # Python
 __pycache__/
@@ -12,19 +12,25 @@ __pycache__/
 env/
 venv/
 
-# Genome checkpoints (large binary files)
-results/*.pt
+# Genome checkpoints (large binary files - hosted on HuggingFace)
+*.pt
 results/genome_viz.png
 results/_*_checkpoint.json
 
-# Generated HTML
+# Generated HTML/PDF (regenerated from markdown)
 paper_ndna.html
+paper_ndna_gpt2.html
 _paper_tmp.*
 
-# Node (PDF generation)
+# Node (PDF generation - root level only)
 node_modules/
-package.json
-package-lock.json
+/package.json
+/package-lock.json
+
+# Viz build output
+viz/.next/
+viz/node_modules/
+viz/out/
 
 # Archive (old experiments, not part of published work)
 archive/

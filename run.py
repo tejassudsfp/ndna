@@ -10,6 +10,7 @@ Usage:
     python3 run.py transfer100 Transfer CIFAR-10 genome to CIFAR-100
     python3 run.py transformer Genome transformer on IMDB (Rung 3)
     python3 run.py video       Factored spatiotemporal genome on Moving MNIST (Rung 4)
+    python3 run.py gpt2         Train GPT-2 with genome masks (Rung 5)
     python3 run.py visualize   Generate dashboard from saved genome
     python3 run.py results     Print all saved results
 """
@@ -55,6 +56,11 @@ def cmd_transformer():
 
 def cmd_video():
     from experiments.rung4_video import run
+    run()
+
+
+def cmd_gpt2():
+    from experiments.rung5_gpt2 import run
     run()
 
 
@@ -142,6 +148,7 @@ COMMANDS = {
     'transfer100': cmd_transfer100,
     'transformer': cmd_transformer,
     'video': cmd_video,
+    'gpt2': cmd_gpt2,
     'visualize': cmd_visualize,
     'results': cmd_results,
 }

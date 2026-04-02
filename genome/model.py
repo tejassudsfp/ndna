@@ -118,6 +118,25 @@ class Genome(nn.Module):
         )
         return total / n_possible
 
+    def sparsity_loss_adjacent_only(self, hidden_dim, ff_dim, n_layers):
+        """Metabolic cost for adjacent-band masks only (no quadratic skip iteration).
+
+        Used by GrownGPT2 where skip connections are provided by the residual
+        stream and the genome only controls W_o and FF1 per layer.
+        """
+        total = 0
+        n_possible = 0
+        for i in range(n_layers):
+            # W_o mask: (hidden, hidden)
+            wo_mask = self.growth_mask(i, i + 1, hidden_dim, hidden_dim)
+            total = total + wo_mask.sum()
+            n_possible += wo_mask.numel()
+            # FF1 mask: (ff_dim, hidden)
+            ff_mask = self.growth_mask(i, i + 1, hidden_dim, ff_dim)
+            total = total + ff_mask.sum()
+            n_possible += ff_mask.numel()
+        return total / n_possible
+
 
 class GrownNetwork(nn.Module):
     """Network with genome-grown topology. Skip connections emerge.
@@ -390,6 +409,7 @@ class GrownTransformer(nn.Module):
         self.n_heads = n_heads
         self.head_dim = hidden // n_heads
         self.num_classes = num_classes
+        self.hard_masks = False
         self.temperature = 1.0
 
         assert hidden % n_heads == 0, f"hidden={hidden} not divisible by n_heads={n_heads}"
@@ -442,7 +462,7 @@ class GrownTransformer(nn.Module):
         """Get genome mask for a band pair."""
         return self.genome.growth_mask(
             src_band, tgt_band, src_n, tgt_n,
-            temperature=self.temperature
+            hard=self.hard_masks, temperature=self.temperature
         )
 
     def _manual_attention(self, x, layer_idx, key_padding_mask=None):
@@ -609,3 +629,244 @@ class GrownTransformer(nn.Module):
                         if d > 0.01 or avg > 0.01:
                             print(f"      {band_names[s]}->{band_names[t]} "
                                   f"(skip): {d:.1%} hard, avg={avg:.3f}")
+
+
+class GrownGPT2(nn.Module):
+    """GPT-2 with genome-controlled connectivity on W_o and FF1.
+
+    Causal (decoder-only) transformer. The genome masks the attention output
+    projection (W_o) and feed-forward expansion (FF1) in each layer. No
+    genome-controlled skip connections because GPT-2's residual stream already
+    provides free skip paths.
+
+    Band mapping (n_bands=14):
+      0:     Embedding output    (hidden dims)
+      1-12:  Transformer layers  (hidden dims each)
+      13:    LM head output      (vocab dims, weight-tied, unmasked)
+
+    Masked connections per layer: W_o (768x768) + FF1 (3072x768) = 2.95M
+    Total masked: 12 layers x 2.95M = 35.4M
+    Genome params: 354 (K=8, D=8, L=14)
+    Compression: ~100,000:1
+
+    Key differences from GrownTransformer:
+    - Causal attention (lower-triangular mask)
+    - GELU activation (not ReLU)
+    - Weight-tied LM head (output = embedding.T)
+    - No genome skip connections (residual stream is free)
+    - Adjacent-only sparsity loss (linear, not quadratic)
+    - FlashAttention compatible (genome masks W_o only, not attention)
+    """
+
+    def __init__(self, genome, vocab_size=50257, hidden=768, ff_dim=3072,
+                 n_layers=12, n_heads=12, max_len=1024):
+        super().__init__()
+        self.genome = genome
+        self.vocab_size = vocab_size
+        self.hidden = hidden
+        self.ff_dim = ff_dim
+        self.n_layers = n_layers
+        self.n_heads = n_heads
+        self.head_dim = hidden // n_heads
+        self.max_len = max_len
+        self.hard_masks = False
+        self.register_buffer('temperature', torch.tensor(1.0))
+
+        assert hidden % n_heads == 0, f"hidden={hidden} not divisible by n_heads={n_heads}"
+
+        # Embeddings
+        self.token_emb = nn.Embedding(vocab_size, hidden)
+        self.pos_emb = nn.Embedding(max_len, hidden)
+        self.drop = nn.Dropout(0.0)  # configurable
+
+        # Transformer layers
+        self.ln1s = nn.ModuleList()
+        self.W_qs = nn.ModuleList()
+        self.W_ks = nn.ModuleList()
+        self.W_vs = nn.ModuleList()
+        self.W_os = nn.ModuleList()  # genome-masked
+        self.ln2s = nn.ModuleList()
+        self.ff1s = nn.ModuleList()  # genome-masked
+        self.ff2s = nn.ModuleList()
+
+        for _ in range(n_layers):
+            self.ln1s.append(nn.LayerNorm(hidden))
+            self.W_qs.append(nn.Linear(hidden, hidden))
+            self.W_ks.append(nn.Linear(hidden, hidden))
+            self.W_vs.append(nn.Linear(hidden, hidden))
+            self.W_os.append(nn.Linear(hidden, hidden, bias=False))
+            self.ln2s.append(nn.LayerNorm(hidden))
+            self.ff1s.append(nn.Linear(hidden, ff_dim))
+            self.ff2s.append(nn.Linear(ff_dim, hidden))
+
+        self.ln_f = nn.LayerNorm(hidden)
+
+        # Weight-tied LM head (no separate linear, uses token_emb.weight)
+        # No bias for LM head
+
+        # Attention scale
+        self.scale = self.head_dim ** -0.5
+
+        # Mask cache for efficiency (recomputed each forward when training)
+        self._mask_cache = {}
+
+        self._init_weights()
+
+    def _init_weights(self):
+        """GPT-2 style initialization."""
+        for module in self.modules():
+            if isinstance(module, nn.Linear):
+                torch.nn.init.normal_(module.weight, mean=0.0, std=0.02)
+                if module.bias is not None:
+                    torch.nn.init.zeros_(module.bias)
+            elif isinstance(module, nn.Embedding):
+                torch.nn.init.normal_(module.weight, mean=0.0, std=0.02)
+            elif isinstance(module, nn.LayerNorm):
+                torch.nn.init.ones_(module.weight)
+                torch.nn.init.zeros_(module.bias)
+
+        # Scale residual projections (W_o and ff2) by 1/sqrt(2*n_layers)
+        # following GPT-2 convention
+        scale = 1.0 / math.sqrt(2 * self.n_layers)
+        for i in range(self.n_layers):
+            self.W_os[i].weight.data *= scale
+            self.ff2s[i].weight.data *= scale
+
+    def _get_mask(self, src_band, tgt_band, src_n, tgt_n):
+        """Get genome mask, using cache during eval."""
+        key = (src_band, tgt_band, src_n, tgt_n)
+        if not self.training and key in self._mask_cache:
+            return self._mask_cache[key]
+        mask = self.genome.growth_mask(
+            src_band, tgt_band, src_n, tgt_n,
+            hard=self.hard_masks, temperature=self.temperature
+        )
+        if not self.training:
+            self._mask_cache[key] = mask
+        return mask
+
+    def _causal_attention(self, x, layer_idx):
+        """Causal multi-head attention. Q/K/V standard, W_o genome-masked.
+
+        Uses F.scaled_dot_product_attention for FlashAttention when available.
+        """
+        B, L, _ = x.shape
+
+        Q = self.W_qs[layer_idx](x)
+        K = self.W_ks[layer_idx](x)
+        V = self.W_vs[layer_idx](x)
+
+        # Reshape to (B, n_heads, L, head_dim)
+        Q = Q.view(B, L, self.n_heads, self.head_dim).transpose(1, 2)
+        K = K.view(B, L, self.n_heads, self.head_dim).transpose(1, 2)
+        V = V.view(B, L, self.n_heads, self.head_dim).transpose(1, 2)
+
+        # Use PyTorch's SDPA with causal mask (enables FlashAttention)
+        attn_out = F.scaled_dot_product_attention(Q, K, V, is_causal=True)
+
+        # Concatenate heads: (B, L, hidden)
+        attn_out = attn_out.transpose(1, 2).contiguous().view(B, L, self.hidden)
+
+        # Output projection with GENOME MASK
+        # Band i -> band i+1 for layer i
+        wo_mask = self._get_mask(layer_idx, layer_idx + 1, self.hidden, self.hidden)
+        out = F.linear(attn_out, self.W_os[layer_idx].weight * wo_mask)
+
+        return out
+
+    def forward(self, input_ids, targets=None):
+        """Forward pass. Returns logits (and loss if targets provided).
+
+        Args:
+            input_ids: (B, L) token indices
+            targets: (B, L) target token indices for computing loss
+        Returns:
+            logits: (B, L, vocab_size)
+            loss: scalar if targets provided, else None
+        """
+        B, L = input_ids.shape
+        assert L <= self.max_len, f"Sequence length {L} > max_len {self.max_len}"
+
+        # Clear mask cache at start of forward
+        self._mask_cache = {}
+
+        positions = torch.arange(L, device=input_ids.device)
+
+        # Embedding (band 0)
+        x = self.token_emb(input_ids) + self.pos_emb(positions)
+        x = self.drop(x)
+
+        # Transformer layers (bands 1-12)
+        for i in range(self.n_layers):
+            # Pre-norm attention
+            ln_x = self.ln1s[i](x)
+            attn_out = self._causal_attention(ln_x, i)
+            x = x + attn_out
+
+            # Pre-norm feed-forward with genome mask on FF1
+            ln_x = self.ln2s[i](x)
+            ff1_mask = self._get_mask(i, i + 1, self.hidden, self.ff_dim)
+            ff_out = F.linear(ln_x, self.ff1s[i].weight * ff1_mask, self.ff1s[i].bias)
+            ff_out = F.gelu(ff_out)
+            ff_out = self.ff2s[i](ff_out)
+            x = x + ff_out
+
+        x = self.ln_f(x)
+
+        # Weight-tied LM head: logits = x @ embedding.T
+        logits = F.linear(x, self.token_emb.weight)
+
+        loss = None
+        if targets is not None:
+            loss = F.cross_entropy(logits.view(-1, self.vocab_size), targets.view(-1))
+
+        return logits, loss
+
+    def count_effective(self, threshold=0.5):
+        """Count active connections and density metrics across all masked layers."""
+        total = active = 0
+        mask_sum = 0.0
+        with torch.no_grad():
+            for i in range(self.n_layers):
+                # W_o mask
+                m_wo = self._get_mask(i, i + 1, self.hidden, self.hidden)
+                total += m_wo.numel()
+                active += (m_wo > threshold).sum().item()
+                mask_sum += m_wo.sum().item()
+                # FF1 mask
+                m_ff = self._get_mask(i, i + 1, self.hidden, self.ff_dim)
+                total += m_ff.numel()
+                active += (m_ff > threshold).sum().item()
+                mask_sum += m_ff.sum().item()
+        soft_density = mask_sum / total if total > 0 else 0.0
+        return active, total, soft_density
+
+    def describe_topology(self):
+        """Print per-layer density for W_o and FF1."""
+        print("    GPT-2 connectivity per layer:")
+        with torch.no_grad():
+            for i in range(self.n_layers):
+                m_wo = self._get_mask(i, i + 1, self.hidden, self.hidden)
+                m_ff = self._get_mask(i, i + 1, self.hidden, self.ff_dim)
+                d_wo = (m_wo > 0.5).float().mean().item()
+                d_ff = (m_ff > 0.5).float().mean().item()
+                avg_wo = m_wo.mean().item()
+                avg_ff = m_ff.mean().item()
+                print(f"      L{i+1:2d} W_o: {d_wo:5.1%} hard, avg={avg_wo:.3f}  |  "
+                      f"FF1: {d_ff:5.1%} hard, avg={avg_ff:.3f}")
+
+    @torch.no_grad()
+    def generate(self, input_ids, max_new_tokens=100, temperature=1.0, top_k=None):
+        """Autoregressive text generation."""
+        for _ in range(max_new_tokens):
+            # Crop to max_len if needed
+            idx_cond = input_ids if input_ids.size(1) <= self.max_len else input_ids[:, -self.max_len:]
+            logits, _ = self(idx_cond)
+            logits = logits[:, -1, :] / temperature
+            if top_k is not None:
+                v, _ = torch.topk(logits, min(top_k, logits.size(-1)))
+                logits[logits < v[:, [-1]]] = float('-inf')
+            probs = F.softmax(logits, dim=-1)
+            next_id = torch.multinomial(probs, num_samples=1)
+            input_ids = torch.cat([input_ids, next_id], dim=1)
+        return input_ids

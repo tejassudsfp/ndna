@@ -1,0 +1,120 @@
+{
+  "model": "NDNA Genome GPT-2 Small",
+  "checkpoint_iter": 49500,
+  "best_val_loss": 3.0406,
+  "total_training_iters": 52700,
+  "genome_params": 354,
+  "model_params": 124430946,
+  "masked_connections": 35389440,
+  "compression_ratio": "99,970:1",
+  "genome_config": {
+    "n_types": 8,
+    "type_dim": 8,
+    "n_bands": 14
+  },
+  "model_config": {
+    "vocab_size": 50257,
+    "hidden": 768,
+    "ff_dim": 3072,
+    "n_layers": 12,
+    "n_heads": 12,
+    "block_size": 1024
+  },
+  "training": {
+    "dataset": "OpenWebText",
+    "gpu": "A100 80GB",
+    "batch_size_tokens": 524288,
+    "optimizer": "AdamW",
+    "max_lr": "6e-4",
+    "weight_decay": 0.1,
+    "temperature_schedule": "1.0 -> 10.0 over 50K iters (linear)"
+  },
+  "benchmarks": {
+    "wikitext2_ppl": {
+      "ndna": 36.01,
+      "gpt2_reference": 29.41,
+      "direction": "lower_better",
+      "source": "custom sliding-window perplexity, stride=512"
+    },
+    "wikitext103_ppl": {
+      "ndna": 36.01,
+      "gpt2_reference": 37.50,
+      "direction": "lower_better",
+      "beats_reference": true,
+      "source": "custom sliding-window perplexity, stride=512"
+    },
+    "ptb_ppl": {
+      "ndna": 59.40,
+      "gpt2_reference": 65.85,
+      "direction": "lower_better",
+      "beats_reference": true,
+      "source": "custom sliding-window perplexity, PTB test set from github.com/wojzaremba/lstm"
+    },
+    "lambada_ppl": {
+      "ndna": 22.21,
+      "gpt2_reference": 35.13,
+      "direction": "lower_better",
+      "beats_reference": true,
+      "source": "custom perplexity on last word, LAMBADA test set from HuggingFace"
+    },
+    "lambada_acc": {
+      "ndna": 0.3076,
+      "gpt2_reference": 0.4599,
+      "direction": "higher_better",
+      "source": "accuracy on last word prediction, LAMBADA test set"
+    },
+    "hellaswag_acc": {
+      "ndna": 0.2873,
+      "gpt2_reference": 0.312,
+      "direction": "higher_better",
+      "source": "4-way completion scoring, HellaSwag validation set. GPT-2 reference from Zellers et al. 2019 (not on OpenAI model card)"
+    },
+    "cbt_cn_acc": {
+      "ndna": 0.8268,
+      "gpt2_reference": 0.8765,
+      "direction": "higher_better",
+      "source": "10-way cloze scoring, CBT Common Nouns test set"
+    },
+    "cbt_ne_acc": {
+      "ndna": 0.7452,
+      "gpt2_reference": 0.834,
+      "direction": "higher_better",
+      "source": "10-way cloze scoring, CBT Named Entities test set"
+    },
+    "enwiki8_bpb": {
+      "ndna": 1.393,
+      "gpt2_reference": 1.16,
+      "direction": "lower_better",
+      "source": "bits per byte on enwiki8 test split (last 5M chars)"
+    },
+    "text8_bpc": {
+      "ndna": 1.269,
+      "gpt2_reference": 1.17,
+      "direction": "lower_better",
+      "source": "bits per character on text8 test split (last 5M chars)"
+    }
+  },
+  "final_topology": {
+    "active_layers": [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12],
+    "notes": "At checkpoint iter 49500, 8/12 layers have hard density 1.0 (layers 5-12). Layers 1-4 have 0% hard density in the eval_genome.json (taken at iter 20K). At iter 49500+, layers 1-4 had begun waking up but checkpoint was saved at best val loss.",
+    "hard_density_overall": 0.667,
+    "soft_density_overall": 0.680
+  },
+  "reproduction": {
+    "steps": [
+      "1. Clone the NDNA repository",
+      "2. Install dependencies: pip install torch tiktoken datasets",
+      "3. Load checkpoint: torch.load('results/gpt2_full/genome_ckpt.pt')",
+      "4. Initialize genome: Genome(n_types=8, type_dim=8, n_bands=14)",
+      "5. Initialize model: GrownGPT2(genome, vocab_size=50257, hidden=768, ff_dim=3072, n_layers=12, n_heads=12, max_len=1024)",
+      "6. Load state dicts (strip '_orig_mod.' prefix from model state keys)",
+      "7. Set model.hard_masks = True for evaluation",
+      "8. Run eval scripts from experiments/ directory"
+    ],
+    "eval_scripts": [
+      "experiments/eval_full_benchmark.py - Main benchmark suite (WikiText, LAMBADA, HellaSwag, enwiki8, text8)",
+      "experiments/eval_gpt2.py - HellaSwag + WikiText-103 + topology analysis",
+      "experiments/eval_lmharness.py - lm-evaluation-harness wrapper"
+    ]
+  }
+}

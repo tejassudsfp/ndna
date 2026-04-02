@@ -1,0 +1,867 @@
+{
+  "checkpoint_iter": 49500,
+  "genome_params": 354,
+  "total_connections": 35389440,
+  "topology_by_temperature": {
+    "1.0": [
+      {
+        "layer": 1,
+        "wo_hard_density": 0.981895,
+        "wo_soft_density": 0.542647,
+        "ff_hard_density": 0.981887,
+        "ff_soft_density": 0.542636
+      },
+      {
+        "layer": 2,
+        "wo_hard_density": 0.451509,
+        "wo_soft_density": 0.500156,
+        "ff_hard_density": 0.451585,
+        "ff_soft_density": 0.500155
+      },
+      {
+        "layer": 3,
+        "wo_hard_density": 0.204246,
+        "wo_soft_density": 0.485405,
+        "ff_hard_density": 0.203968,
+        "ff_soft_density": 0.485409
+      },
+      {
+        "layer": 4,
+        "wo_hard_density": 0.076791,
+        "wo_soft_density": 0.481159,
+        "ff_hard_density": 0.076356,
+        "ff_soft_density": 0.481146
+      },
+      {
+        "layer": 5,
+        "wo_hard_density": 1.0,
+        "wo_soft_density": 0.639921,
+        "ff_hard_density": 1.0,
+        "ff_soft_density": 0.639921
+      },
+      {
+        "layer": 6,
+        "wo_hard_density": 1.0,
+        "wo_soft_density": 0.633443,
+        "ff_hard_density": 1.0,
+        "ff_soft_density": 0.633442
+      },
+      {
+        "layer": 7,
+        "wo_hard_density": 1.0,
+        "wo_soft_density": 0.635657,
+        "ff_hard_density": 1.0,
+        "ff_soft_density": 0.635657
+      },
+      {
+        "layer": 8,
+        "wo_hard_density": 1.0,
+        "wo_soft_density": 0.633356,
+        "ff_hard_density": 1.0,
+        "ff_soft_density": 0.633356
+      },
+      {
+        "layer": 9,
+        "wo_hard_density": 1.0,
+        "wo_soft_density": 0.633867,
+        "ff_hard_density": 1.0,
+        "ff_soft_density": 0.633867
+      },
+      {
+        "layer": 10,
+        "wo_hard_density": 1.0,
+        "wo_soft_density": 0.635655,
+        "ff_hard_density": 1.0,
+        "ff_soft_density": 0.635655
+      },
+      {
+        "layer": 11,
+        "wo_hard_density": 1.0,
+        "wo_soft_density": 0.630693,
+        "ff_hard_density": 1.0,
+        "ff_soft_density": 0.630693
+      },
+      {
+        "layer": 12,
+        "wo_hard_density": 1.0,
+        "wo_soft_density": 0.634868,
+        "ff_hard_density": 1.0,
+        "ff_soft_density": 0.634868
+      }
+    ],
+    "2.0": [
+      {
+        "layer": 1,
+        "wo_hard_density": 0.981895,
+        "wo_soft_density": 0.584504,
+        "ff_hard_density": 0.981887,
+        "ff_soft_density": 0.584483
+      },
+      {
+        "layer": 2,
+        "wo_hard_density": 0.451509,
+        "wo_soft_density": 0.500182,
+        "ff_hard_density": 0.451585,
+        "ff_soft_density": 0.50018
+      },
+      {
+        "layer": 3,
+        "wo_hard_density": 0.204246,
+        "wo_soft_density": 0.470939,
+        "ff_hard_density": 0.203968,
+        "ff_soft_density": 0.470947
+      },
+      {
+        "layer": 4,
+        "wo_hard_density": 0.076791,
+        "wo_soft_density": 0.462429,
+        "ff_hard_density": 0.076356,
+        "ff_soft_density": 0.462401
+      },
+      {
+        "layer": 5,
+        "wo_hard_density": 1.0,
+        "wo_soft_density": 0.759514,
+        "ff_hard_density": 1.0,
+        "ff_soft_density": 0.759514
+      },
+      {
+        "layer": 6,
+        "wo_hard_density": 1.0,
+        "wo_soft_density": 0.749134,
+        "ff_hard_density": 1.0,
+        "ff_soft_density": 0.749133
+      },
+      {
+        "layer": 7,
+        "wo_hard_density": 1.0,
+        "wo_soft_density": 0.75271,
+        "ff_hard_density": 1.0,
+        "ff_soft_density": 0.75271
+      },
+      {
+        "layer": 8,
+        "wo_hard_density": 1.0,
+        "wo_soft_density": 0.748999,
+        "ff_hard_density": 1.0,
+        "ff_soft_density": 0.748999
+      },
+      {
+        "layer": 9,
+        "wo_hard_density": 1.0,
+        "wo_soft_density": 0.749825,
+        "ff_hard_density": 1.0,
+        "ff_soft_density": 0.749825
+      },
+      {
+        "layer": 10,
+        "wo_hard_density": 1.0,
+        "wo_soft_density": 0.752695,
+        "ff_hard_density": 1.0,
+        "ff_soft_density": 0.752696
+      },
+      {
+        "layer": 11,
+        "wo_hard_density": 1.0,
+        "wo_soft_density": 0.74467,
+        "ff_hard_density": 1.0,
+        "ff_soft_density": 0.74467
+      },
+      {
+        "layer": 12,
+        "wo_hard_density": 1.0,
+        "wo_soft_density": 0.751442,
+        "ff_hard_density": 1.0,
+        "ff_soft_density": 0.751442
+      }
+    ],
+    "3.0": [
+      {
+        "layer": 1,
+        "wo_hard_density": 0.981895,
+        "wo_soft_density": 0.624848,
+        "ff_hard_density": 0.981887,
+        "ff_soft_density": 0.624818
+      },
+      {
+        "layer": 2,
+        "wo_hard_density": 0.451509,
+        "wo_soft_density": 0.499976,
+        "ff_hard_density": 0.451585,
+        "ff_soft_density": 0.499974
+      },
+      {
+        "layer": 3,
+        "wo_hard_density": 0.204246,
+        "wo_soft_density": 0.456724,
+        "ff_hard_density": 0.203968,
+        "ff_soft_density": 0.456736
+      },
+      {
+        "layer": 4,
+        "wo_hard_density": 0.076791,
+        "wo_soft_density": 0.443915,
+        "ff_hard_density": 0.076356,
+        "ff_soft_density": 0.443874
+      },
+      {
+        "layer": 5,
+        "wo_hard_density": 1.0,
+        "wo_soft_density": 0.848767,
+        "ff_hard_density": 1.0,
+        "ff_soft_density": 0.848767
+      },
+      {
+        "layer": 6,
+        "wo_hard_density": 1.0,
+        "wo_soft_density": 0.837661,
+        "ff_hard_density": 1.0,
+        "ff_soft_density": 0.83766
+      },
+      {
+        "layer": 7,
+        "wo_hard_density": 1.0,
+        "wo_soft_density": 0.841533,
+        "ff_hard_density": 1.0,
+        "ff_soft_density": 0.841533
+      },
+      {
+        "layer": 8,
+        "wo_hard_density": 1.0,
+        "wo_soft_density": 0.837524,
+        "ff_hard_density": 1.0,
+        "ff_soft_density": 0.837524
+      },
+      {
+        "layer": 9,
+        "wo_hard_density": 1.0,
+        "wo_soft_density": 0.838418,
+        "ff_hard_density": 1.0,
+        "ff_soft_density": 0.838418
+      },
+      {
+        "layer": 10,
+        "wo_hard_density": 1.0,
+        "wo_soft_density": 0.841498,
+        "ff_hard_density": 1.0,
+        "ff_soft_density": 0.841499
+      },
+      {
+        "layer": 11,
+        "wo_hard_density": 1.0,
+        "wo_soft_density": 0.832796,
+        "ff_hard_density": 1.0,
+        "ff_soft_density": 0.832796
+      },
+      {
+        "layer": 12,
+        "wo_hard_density": 1.0,
+        "wo_soft_density": 0.840168,
+        "ff_hard_density": 1.0,
+        "ff_soft_density": 0.840168
+      }
+    ],
+    "4.0": [
+      {
+        "layer": 1,
+        "wo_hard_density": 0.981895,
+        "wo_soft_density": 0.663077,
+        "ff_hard_density": 0.981887,
+        "ff_soft_density": 0.663041
+      },
+      {
+        "layer": 2,
+        "wo_hard_density": 0.451509,
+        "wo_soft_density": 0.49948,
+        "ff_hard_density": 0.451585,
+        "ff_soft_density": 0.499479
+      },
+      {
+        "layer": 3,
+        "wo_hard_density": 0.204246,
+        "wo_soft_density": 0.44287,
+        "ff_hard_density": 0.203968,
+        "ff_soft_density": 0.442883
+      },
+      {
+        "layer": 4,
+        "wo_hard_density": 0.076791,
+        "wo_soft_density": 0.425718,
+        "ff_hard_density": 0.076356,
+        "ff_soft_density": 0.425664
+      },
+      {
+        "layer": 5,
+        "wo_hard_density": 1.0,
+        "wo_soft_density": 0.908866,
+        "ff_hard_density": 1.0,
+        "ff_soft_density": 0.908866
+      },
+      {
+        "layer": 6,
+        "wo_hard_density": 1.0,
+        "wo_soft_density": 0.899149,
+        "ff_hard_density": 1.0,
+        "ff_soft_density": 0.899148
+      },
+      {
+        "layer": 7,
+        "wo_hard_density": 1.0,
+        "wo_soft_density": 0.90258,
+        "ff_hard_density": 1.0,
+        "ff_soft_density": 0.90258
+      },
+      {
+        "layer": 8,
+        "wo_hard_density": 1.0,
+        "wo_soft_density": 0.899036,
+        "ff_hard_density": 1.0,
+        "ff_soft_density": 0.899036
+      },
+      {
+        "layer": 9,
+        "wo_hard_density": 1.0,
+        "wo_soft_density": 0.899828,
+        "ff_hard_density": 1.0,
+        "ff_soft_density": 0.899828
+      },
+      {
+        "layer": 10,
+        "wo_hard_density": 1.0,
+        "wo_soft_density": 0.902532,
+        "ff_hard_density": 1.0,
+        "ff_soft_density": 0.902532
+      },
+      {
+        "layer": 11,
+        "wo_hard_density": 1.0,
+        "wo_soft_density": 0.894803,
+        "ff_hard_density": 1.0,
+        "ff_soft_density": 0.894803
+      },
+      {
+        "layer": 12,
+        "wo_hard_density": 1.0,
+        "wo_soft_density": 0.901379,
+        "ff_hard_density": 1.0,
+        "ff_soft_density": 0.901379
+      }
+    ],
+    "5.0": [
+      {
+        "layer": 1,
+        "wo_hard_density": 0.981895,
+        "wo_soft_density": 0.698745,
+        "ff_hard_density": 0.981887,
+        "ff_soft_density": 0.698704
+      },
+      {
+        "layer": 2,
+        "wo_hard_density": 0.451509,
+        "wo_soft_density": 0.49868,
+        "ff_hard_density": 0.451585,
+        "ff_soft_density": 0.49868
+      },
+      {
+        "layer": 3,
+        "wo_hard_density": 0.204246,
+        "wo_soft_density": 0.429464,
+        "ff_hard_density": 0.203968,
+        "ff_soft_density": 0.429479
+      },
+      {
+        "layer": 4,
+        "wo_hard_density": 0.076791,
+        "wo_soft_density": 0.407931,
+        "ff_hard_density": 0.076356,
+        "ff_soft_density": 0.407863
+      },
+      {
+        "layer": 5,
+        "wo_hard_density": 1.0,
+        "wo_soft_density": 0.946582,
+        "ff_hard_density": 1.0,
+        "ff_soft_density": 0.946582
+      },
+      {
+        "layer": 6,
+        "wo_hard_density": 1.0,
+        "wo_soft_density": 0.939039,
+        "ff_hard_density": 1.0,
+        "ff_soft_density": 0.939038
+      },
+      {
+        "layer": 7,
+        "wo_hard_density": 1.0,
+        "wo_soft_density": 0.941738,
+        "ff_hard_density": 1.0,
+        "ff_soft_density": 0.941738
+      },
+      {
+        "layer": 8,
+        "wo_hard_density": 1.0,
+        "wo_soft_density": 0.938958,
+        "ff_hard_density": 1.0,
+        "ff_soft_density": 0.938957
+      },
+      {
+        "layer": 9,
+        "wo_hard_density": 1.0,
+        "wo_soft_density": 0.93958,
+        "ff_hard_density": 1.0,
+        "ff_soft_density": 0.93958
+      },
+      {
+        "layer": 10,
+        "wo_hard_density": 1.0,
+        "wo_soft_density": 0.941686,
+        "ff_hard_density": 1.0,
+        "ff_soft_density": 0.941686
+      },
+      {
+        "layer": 11,
+        "wo_hard_density": 1.0,
+        "wo_soft_density": 0.935593,
+        "ff_hard_density": 1.0,
+        "ff_soft_density": 0.935593
+      },
+      {
+        "layer": 12,
+        "wo_hard_density": 1.0,
+        "wo_soft_density": 0.9408,
+        "ff_hard_density": 1.0,
+        "ff_soft_density": 0.9408
+      }
+    ],
+    "6.0": [
+      {
+        "layer": 1,
+        "wo_hard_density": 0.981895,
+        "wo_soft_density": 0.731563,
+        "ff_hard_density": 0.981887,
+        "ff_soft_density": 0.73152
+      },
+      {
+        "layer": 2,
+        "wo_hard_density": 0.451509,
+        "wo_soft_density": 0.497593,
+        "ff_hard_density": 0.451585,
+        "ff_soft_density": 0.497594
+      },
+      {
+        "layer": 3,
+        "wo_hard_density": 0.204246,
+        "wo_soft_density": 0.416578,
+        "ff_hard_density": 0.203968,
+        "ff_soft_density": 0.416592
+      },
+      {
+        "layer": 4,
+        "wo_hard_density": 0.076791,
+        "wo_soft_density": 0.390634,
+        "ff_hard_density": 0.076356,
+        "ff_soft_density": 0.390554
+      },
+      {
+        "layer": 5,
+        "wo_hard_density": 1.0,
+        "wo_soft_density": 0.969217,
+        "ff_hard_density": 1.0,
+        "ff_soft_density": 0.969217
+      },
+      {
+        "layer": 6,
+        "wo_hard_density": 1.0,
+        "wo_soft_density": 0.963785,
+        "ff_hard_density": 1.0,
+        "ff_soft_density": 0.963785
+      },
+      {
+        "layer": 7,
+        "wo_hard_density": 1.0,
+        "wo_soft_density": 0.965753,
+        "ff_hard_density": 1.0,
+        "ff_soft_density": 0.965753
+      },
+      {
+        "layer": 8,
+        "wo_hard_density": 1.0,
+        "wo_soft_density": 0.963731,
+        "ff_hard_density": 1.0,
+        "ff_soft_density": 0.963731
+      },
+      {
+        "layer": 9,
+        "wo_hard_density": 1.0,
+        "wo_soft_density": 0.964184,
+        "ff_hard_density": 1.0,
+        "ff_soft_density": 0.964184
+      },
+      {
+        "layer": 10,
+        "wo_hard_density": 1.0,
+        "wo_soft_density": 0.965705,
+        "ff_hard_density": 1.0,
+        "ff_soft_density": 0.965705
+      },
+      {
+        "layer": 11,
+        "wo_hard_density": 1.0,
+        "wo_soft_density": 0.961252,
+        "ff_hard_density": 1.0,
+        "ff_soft_density": 0.961252
+      },
+      {
+        "layer": 12,
+        "wo_hard_density": 1.0,
+        "wo_soft_density": 0.965074,
+        "ff_hard_density": 1.0,
+        "ff_soft_density": 0.965074
+      }
+    ],
+    "7.0": [
+      {
+        "layer": 1,
+        "wo_hard_density": 0.981895,
+        "wo_soft_density": 0.761393,
+        "ff_hard_density": 0.981887,
+        "ff_soft_density": 0.761349
+      },
+      {
+        "layer": 2,
+        "wo_hard_density": 0.451509,
+        "wo_soft_density": 0.496257,
+        "ff_hard_density": 0.451585,
+        "ff_soft_density": 0.496261
+      },
+      {
+        "layer": 3,
+        "wo_hard_density": 0.204246,
+        "wo_soft_density": 0.40426,
+        "ff_hard_density": 0.203968,
+        "ff_soft_density": 0.404273
+      },
+      {
+        "layer": 4,
+        "wo_hard_density": 0.076791,
+        "wo_soft_density": 0.373897,
+        "ff_hard_density": 0.076356,
+        "ff_soft_density": 0.373804
+      },
+      {
+        "layer": 5,
+        "wo_hard_density": 1.0,
+        "wo_soft_density": 0.982438,
+        "ff_hard_density": 1.0,
+        "ff_soft_density": 0.982438
+      },
+      {
+        "layer": 6,
+        "wo_hard_density": 1.0,
+        "wo_soft_density": 0.978713,
+        "ff_hard_density": 1.0,
+        "ff_soft_density": 0.978712
+      },
+      {
+        "layer": 7,
+        "wo_hard_density": 1.0,
+        "wo_soft_density": 0.980079,
+        "ff_hard_density": 1.0,
+        "ff_soft_density": 0.980079
+      },
+      {
+        "layer": 8,
+        "wo_hard_density": 1.0,
+        "wo_soft_density": 0.978678,
+        "ff_hard_density": 1.0,
+        "ff_soft_density": 0.978678
+      },
+      {
+        "layer": 9,
+        "wo_hard_density": 1.0,
+        "wo_soft_density": 0.978993,
+        "ff_hard_density": 1.0,
+        "ff_soft_density": 0.978993
+      },
+      {
+        "layer": 10,
+        "wo_hard_density": 1.0,
+        "wo_soft_density": 0.980039,
+        "ff_hard_density": 1.0,
+        "ff_soft_density": 0.980039
+      },
+      {
+        "layer": 11,
+        "wo_hard_density": 1.0,
+        "wo_soft_density": 0.97694,
+        "ff_hard_density": 1.0,
+        "ff_soft_density": 0.97694
+      },
+      {
+        "layer": 12,
+        "wo_hard_density": 1.0,
+        "wo_soft_density": 0.97961,
+        "ff_hard_density": 1.0,
+        "ff_soft_density": 0.97961
+      }
+    ],
+    "8.0": [
+      {
+        "layer": 1,
+        "wo_hard_density": 0.981895,
+        "wo_soft_density": 0.788224,
+        "ff_hard_density": 0.981887,
+        "ff_soft_density": 0.788181
+      },
+      {
+        "layer": 2,
+        "wo_hard_density": 0.451509,
+        "wo_soft_density": 0.49472,
+        "ff_hard_density": 0.451585,
+        "ff_soft_density": 0.494726
+      },
+      {
+        "layer": 3,
+        "wo_hard_density": 0.204246,
+        "wo_soft_density": 0.392541,
+        "ff_hard_density": 0.203968,
+        "ff_soft_density": 0.392552
+      },
+      {
+        "layer": 4,
+        "wo_hard_density": 0.076791,
+        "wo_soft_density": 0.357776,
+        "ff_hard_density": 0.076356,
+        "ff_soft_density": 0.357671
+      },
+      {
+        "layer": 5,
+        "wo_hard_density": 1.0,
+        "wo_soft_density": 0.990039,
+        "ff_hard_density": 1.0,
+        "ff_soft_density": 0.990039
+      },
+      {
+        "layer": 6,
+        "wo_hard_density": 1.0,
+        "wo_soft_density": 0.987566,
+        "ff_hard_density": 1.0,
+        "ff_soft_density": 0.987566
+      },
+      {
+        "layer": 7,
+        "wo_hard_density": 1.0,
+        "wo_soft_density": 0.988484,
+        "ff_hard_density": 1.0,
+        "ff_soft_density": 0.988484
+      },
+      {
+        "layer": 8,
+        "wo_hard_density": 1.0,
+        "wo_soft_density": 0.987545,
+        "ff_hard_density": 1.0,
+        "ff_soft_density": 0.987545
+      },
+      {
+        "layer": 9,
+        "wo_hard_density": 1.0,
+        "wo_soft_density": 0.987756,
+        "ff_hard_density": 1.0,
+        "ff_soft_density": 0.987756
+      },
+      {
+        "layer": 10,
+        "wo_hard_density": 1.0,
+        "wo_soft_density": 0.988452,
+        "ff_hard_density": 1.0,
+        "ff_soft_density": 0.988452
+      },
+      {
+        "layer": 11,
+        "wo_hard_density": 1.0,
+        "wo_soft_density": 0.986367,
+        "ff_hard_density": 1.0,
+        "ff_soft_density": 0.986367
+      },
+      {
+        "layer": 12,
+        "wo_hard_density": 1.0,
+        "wo_soft_density": 0.988171,
+        "ff_hard_density": 1.0,
+        "ff_soft_density": 0.988171
+      }
+    ],
+    "9.0": [
+      {
+        "layer": 1,
+        "wo_hard_density": 0.981895,
+        "wo_soft_density": 0.81214,
+        "ff_hard_density": 0.981887,
+        "ff_soft_density": 0.812099
+      },
+      {
+        "layer": 2,
+        "wo_hard_density": 0.451509,
+        "wo_soft_density": 0.493029,
+        "ff_hard_density": 0.451585,
+        "ff_soft_density": 0.493038
+      },
+      {
+        "layer": 3,
+        "wo_hard_density": 0.204246,
+        "wo_soft_density": 0.381435,
+        "ff_hard_density": 0.203968,
+        "ff_soft_density": 0.381444
+      },
+      {
+        "layer": 4,
+        "wo_hard_density": 0.076791,
+        "wo_soft_density": 0.342314,
+        "ff_hard_density": 0.076356,
+        "ff_soft_density": 0.342198
+      },
+      {
+        "layer": 5,
+        "wo_hard_density": 1.0,
+        "wo_soft_density": 0.994369,
+        "ff_hard_density": 1.0,
+        "ff_soft_density": 0.994369
+      },
+      {
+        "layer": 6,
+        "wo_hard_density": 1.0,
+        "wo_soft_density": 0.992764,
+        "ff_hard_density": 1.0,
+        "ff_soft_density": 0.992764
+      },
+      {
+        "layer": 7,
+        "wo_hard_density": 1.0,
+        "wo_soft_density": 0.993366,
+        "ff_hard_density": 1.0,
+        "ff_soft_density": 0.993366
+      },
+      {
+        "layer": 8,
+        "wo_hard_density": 1.0,
+        "wo_soft_density": 0.992752,
+        "ff_hard_density": 1.0,
+        "ff_soft_density": 0.992752
+      },
+      {
+        "layer": 9,
+        "wo_hard_density": 1.0,
+        "wo_soft_density": 0.99289,
+        "ff_hard_density": 1.0,
+        "ff_soft_density": 0.99289
+      },
+      {
+        "layer": 10,
+        "wo_hard_density": 1.0,
+        "wo_soft_density": 0.993343,
+        "ff_hard_density": 1.0,
+        "ff_soft_density": 0.993343
+      },
+      {
+        "layer": 11,
+        "wo_hard_density": 1.0,
+        "wo_soft_density": 0.991972,
+        "ff_hard_density": 1.0,
+        "ff_soft_density": 0.991972
+      },
+      {
+        "layer": 12,
+        "wo_hard_density": 1.0,
+        "wo_soft_density": 0.993162,
+        "ff_hard_density": 1.0,
+        "ff_soft_density": 0.993162
+      }
+    ],
+    "10.0": [
+      {
+        "layer": 1,
+        "wo_hard_density": 0.981895,
+        "wo_soft_density": 0.833299,
+        "ff_hard_density": 0.981887,
+        "ff_soft_density": 0.83326
+      },
+      {
+        "layer": 2,
+        "wo_hard_density": 0.451509,
+        "wo_soft_density": 0.49123,
+        "ff_hard_density": 0.451585,
+        "ff_soft_density": 0.491241
+      },
+      {
+        "layer": 3,
+        "wo_hard_density": 0.204246,
+        "wo_soft_density": 0.370946,
+        "ff_hard_density": 0.203968,
+        "ff_soft_density": 0.370951
+      },
+      {
+        "layer": 4,
+        "wo_hard_density": 0.076791,
+        "wo_soft_density": 0.327543,
+        "ff_hard_density": 0.076356,
+        "ff_soft_density": 0.327416
+      },
+      {
+        "layer": 5,
+        "wo_hard_density": 1.0,
+        "wo_soft_density": 0.996822,
+        "ff_hard_density": 1.0,
+        "ff_soft_density": 0.996822
+      },
+      {
+        "layer": 6,
+        "wo_hard_density": 1.0,
+        "wo_soft_density": 0.995798,
+        "ff_hard_density": 1.0,
+        "ff_soft_density": 0.995798
+      },
+      {
+        "layer": 7,
+        "wo_hard_density": 1.0,
+        "wo_soft_density": 0.996187,
+        "ff_hard_density": 1.0,
+        "ff_soft_density": 0.996187
+      },
+      {
+        "layer": 8,
+        "wo_hard_density": 1.0,
+        "wo_soft_density": 0.995791,
+        "ff_hard_density": 1.0,
+        "ff_soft_density": 0.995791
+      },
+      {
+        "layer": 9,
+        "wo_hard_density": 1.0,
+        "wo_soft_density": 0.995881,
+        "ff_hard_density": 1.0,
+        "ff_soft_density": 0.995881
+      },
+      {
+        "layer": 10,
+        "wo_hard_density": 1.0,
+        "wo_soft_density": 0.99617,
+        "ff_hard_density": 1.0,
+        "ff_soft_density": 0.99617
+      },
+      {
+        "layer": 11,
+        "wo_hard_density": 1.0,
+        "wo_soft_density": 0.995283,
+        "ff_hard_density": 1.0,
+        "ff_soft_density": 0.995283
+      },
+      {
+        "layer": 12,
+        "wo_hard_density": 1.0,
+        "wo_soft_density": 0.996056,
+        "ff_hard_density": 1.0,
+        "ff_soft_density": 0.996056
+      }
+    ]
+  }
+}

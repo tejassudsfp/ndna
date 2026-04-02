@@ -1,0 +1,140 @@
+============================================================
+  RUNG 5: GPT-2 WITH GENOME-CONTROLLED CONNECTIVITY
+  354 parameters grow GPT-2.
+============================================================
+  Config: full
+  Device: cuda
+  Dtype: bfloat16
+  Layers: 12, Hidden: 768, FF: 3072
+  Block size: 1024, Batch: 12
+  Grad accum: 40
+  Tokens/iter: 491,520
+  Max iters: 100,000
+  Dataset: openwebtext
+
+============================================================
+  Training: genome
+============================================================
+  Genome params: 354
+  Total params: 124,430,946
+  Compiling model with torch.compile...
+  Resuming from iter 19700...
+  iter  19700 | train 3.1340 | val 3.1612 | lr 5.58e-04 | 14702 tok/s | hard=66.7% soft=68.0% temp=4.5
+  iter  19800 | train 3.1493 | val 3.1540 | lr 5.57e-04 | 107174 tok/s | hard=66.7% soft=68.1% temp=4.6 sp=23.2460
+  iter  19900 | train 3.1339 | val 3.1564 | lr 5.57e-04 | 114809 tok/s | hard=66.7% soft=68.2% temp=4.6 sp=23.2714
+  iter  20000 | train 3.1333 | val 3.1598 | lr 5.56e-04 | 117722 tok/s | hard=66.7% soft=68.1% temp=4.6 sp=23.2393
+  iter  20100 | train 3.1434 | val 3.1461 | lr 5.56e-04 | 119203 tok/s | hard=66.7% soft=68.3% temp=4.6 sp=23.2484
+  iter  20200 | train 3.1579 | val 3.1536 | lr 5.55e-04 | 120008 tok/s | hard=66.7% soft=68.2% temp=4.6 sp=23.2710
+  iter  20300 | train 3.1494 | val 3.1638 | lr 5.55e-04 | 120665 tok/s | hard=66.7% soft=68.3% temp=4.7 sp=23.2646
+  iter  20400 | train 3.1335 | val 3.1718 | lr 5.54e-04 | 121127 tok/s | hard=66.7% soft=68.3% temp=4.7 sp=23.2619
+  iter  20500 | train 3.1537 | val 3.1420 | lr 5.54e-04 | 121420 tok/s | hard=66.7% soft=68.5% temp=4.7 sp=23.2672
+  iter  20600 | train 3.1407 | val 3.1592 | lr 5.53e-04 | 121487 tok/s | hard=66.7% soft=68.4% temp=4.7 sp=23.3007
+  iter  20700 | train 3.1368 | val 3.1586 | lr 5.53e-04 | 121691 tok/s | hard=66.7% soft=68.5% temp=4.7 sp=23.2650
+  iter  20800 | train 3.1484 | val 3.1376 | lr 5.52e-04 | 121859 tok/s | hard=66.7% soft=68.5% temp=4.7 sp=23.2828
+  iter  20900 | train 3.1274 | val 3.1570 | lr 5.52e-04 | 121944 tok/s | hard=66.7% soft=68.5% temp=4.8 sp=23.2836
+  iter  21000 | train 3.1522 | val 3.1569 | lr 5.51e-04 | 122067 tok/s | hard=66.7% soft=68.5% temp=4.8 sp=23.2510
+  iter  21100 | train 3.1381 | val 3.1301 | lr 5.51e-04 | 122162 tok/s | hard=66.7% soft=68.7% temp=4.8 sp=23.2734
+  iter  21200 | train 3.1242 | val 3.1523 | lr 5.50e-04 | 122212 tok/s | hard=66.7% soft=68.6% temp=4.8 sp=23.2671
+  iter  21300 | train 3.1320 | val 3.1453 | lr 5.50e-04 | 122306 tok/s | hard=66.7% soft=68.7% temp=4.8 sp=23.2777
+  iter  21400 | train 3.1374 | val 3.1415 | lr 5.49e-04 | 122375 tok/s | hard=66.7% soft=68.7% temp=4.9 sp=23.2770
+  iter  21500 | train 3.1389 | val 3.1535 | lr 5.49e-04 | 122455 tok/s | hard=66.7% soft=68.8% temp=4.9 sp=23.2602
+  iter  21600 | train 3.1329 | val 3.1576 | lr 5.48e-04 | 122519 tok/s | hard=66.7% soft=69.0% temp=4.9 sp=23.2856
+  iter  21700 | train 3.1400 | val 3.1512 | lr 5.48e-04 | 122570 tok/s | hard=66.7% soft=68.9% temp=4.9 sp=23.2932
+  iter  21800 | train 3.1465 | val 3.1373 | lr 5.47e-04 | 122621 tok/s | hard=66.7% soft=68.8% temp=4.9 sp=23.2599
+  iter  21900 | train 3.1376 | val 3.1430 | lr 5.47e-04 | 122679 tok/s | hard=66.7% soft=68.9% temp=4.9 sp=23.2953
+  iter  22000 | train 3.1381 | val 3.1406 | lr 5.46e-04 | 122726 tok/s | hard=66.7% soft=69.1% temp=5.0 sp=23.2549
+  iter  22100 | train 3.1260 | val 3.1439 | lr 5.46e-04 | 122775 tok/s | hard=66.7% soft=69.1% temp=5.0 sp=23.2521
+  iter  22200 | train 3.1454 | val 3.1544 | lr 5.45e-04 | 122813 tok/s | hard=66.7% soft=69.0% temp=5.0 sp=23.2776
+  iter  22300 | train 3.1239 | val 3.1509 | lr 5.45e-04 | 122841 tok/s | hard=66.7% soft=69.0% temp=5.0 sp=23.2796
+  iter  22400 | train 3.1336 | val 3.1446 | lr 5.44e-04 | 122871 tok/s | hard=66.7% soft=69.3% temp=5.0 sp=23.2717
+  iter  22500 | train 3.1334 | val 3.1503 | lr 5.44e-04 | 122906 tok/s | hard=66.7% soft=69.1% temp=5.1 sp=23.2678
+  iter  22600 | train 3.1243 | val 3.1495 | lr 5.43e-04 | 122925 tok/s | hard=66.7% soft=69.1% temp=5.1 sp=23.2584
+  iter  22700 | train 3.1253 | val 3.1440 | lr 5.43e-04 | 122869 tok/s | hard=66.7% soft=69.3% temp=5.1 sp=23.2497
+  iter  22800 | train 3.1325 | val 3.1388 | lr 5.42e-04 | 122892 tok/s | hard=66.7% soft=69.2% temp=5.1 sp=23.2552
+  iter  22900 | train 3.1143 | val 3.1458 | lr 5.42e-04 | 122921 tok/s | hard=66.7% soft=69.4% temp=5.1 sp=23.2606
+  iter  23000 | train 3.1276 | val 3.1336 | lr 5.41e-04 | 122941 tok/s | hard=66.7% soft=69.3% temp=5.1 sp=23.2502
+  iter  23100 | train 3.1368 | val 3.1301 | lr 5.41e-04 | 122964 tok/s | hard=66.7% soft=69.3% temp=5.2 sp=23.2530
+  iter  23200 | train 3.1151 | val 3.1403 | lr 5.40e-04 | 122990 tok/s | hard=66.7% soft=69.2% temp=5.2 sp=23.2421
+  iter  23300 | train 3.1275 | val 3.1400 | lr 5.39e-04 | 123012 tok/s | hard=66.7% soft=69.5% temp=5.2 sp=23.2370
+  iter  23400 | train 3.1197 | val 3.1378 | lr 5.39e-04 | 123034 tok/s | hard=66.7% soft=69.4% temp=5.2 sp=23.2435
+  iter  23500 | train 3.1325 | val 3.1413 | lr 5.38e-04 | 123044 tok/s | hard=66.7% soft=69.5% temp=5.2 sp=23.2442
+  iter  23600 | train 3.1318 | val 3.1381 | lr 5.38e-04 | 123054 tok/s | hard=66.7% soft=69.5% temp=5.2 sp=23.2297
+  iter  23700 | train 3.1366 | val 3.1329 | lr 5.37e-04 | 123065 tok/s | hard=66.7% soft=69.6% temp=5.3 sp=23.2534
+  iter  23800 | train 3.1359 | val 3.1265 | lr 5.37e-04 | 123072 tok/s | hard=66.7% soft=69.7% temp=5.3 sp=23.2197
+  iter  23900 | train 3.1232 | val 3.1309 | lr 5.36e-04 | 123065 tok/s | hard=66.7% soft=69.6% temp=5.3 sp=23.2399
+  iter  24000 | train 3.1289 | val 3.1326 | lr 5.36e-04 | 123072 tok/s | hard=66.7% soft=69.6% temp=5.3 sp=23.2318
+  iter  24100 | train 3.1319 | val 3.1271 | lr 5.35e-04 | 123079 tok/s | hard=66.7% soft=69.8% temp=5.3 sp=23.2386
+  iter  24200 | train 3.1135 | val 3.1518 | lr 5.34e-04 | 123086 tok/s | hard=66.7% soft=69.8% temp=5.4 sp=23.2252
+  iter  24300 | train 3.1299 | val 3.1199 | lr 5.34e-04 | 123099 tok/s | hard=66.7% soft=69.8% temp=5.4 sp=23.2190
+  iter  24400 | train 3.1235 | val 3.1292 | lr 5.33e-04 | 123024 tok/s | hard=66.7% soft=69.9% temp=5.4 sp=23.2419
+  iter  24500 | train 3.1279 | val 3.1228 | lr 5.33e-04 | 123033 tok/s | hard=66.7% soft=69.9% temp=5.4 sp=23.2260
+  iter  24600 | train 3.1265 | val 3.1168 | lr 5.32e-04 | 123039 tok/s | hard=66.7% soft=70.0% temp=5.4 sp=23.2325
+  iter  24700 | train 3.1167 | val 3.1251 | lr 5.32e-04 | 123034 tok/s | hard=66.7% soft=69.9% temp=5.4 sp=23.2345
+  iter  24800 | train 3.1135 | val 3.1328 | lr 5.31e-04 | 123007 tok/s | hard=66.7% soft=69.9% temp=5.5 sp=23.2217
+  iter  24900 | train 3.1112 | val 3.1217 | lr 5.30e-04 | 122983 tok/s | hard=66.7% soft=70.1% temp=5.5 sp=23.2175
+  iter  25000 | train 3.1190 | val 3.1508 | lr 5.30e-04 | 122932 tok/s | hard=66.7% soft=70.2% temp=5.5 sp=23.2151
+  iter  25100 | train 3.1147 | val 3.1415 | lr 5.29e-04 | 122886 tok/s | hard=66.7% soft=70.2% temp=5.5 sp=23.2228
+  iter  25200 | train 3.1212 | val 3.1302 | lr 5.29e-04 | 122833 tok/s | hard=66.7% soft=70.2% temp=5.5 sp=23.2337
+  iter  25300 | train 3.1178 | val 3.1385 | lr 5.28e-04 | 122779 tok/s | hard=66.7% soft=70.2% temp=5.6 sp=23.2199
+  iter  25400 | train 3.1176 | val 3.1382 | lr 5.28e-04 | 122720 tok/s | hard=66.7% soft=70.1% temp=5.6 sp=23.2094
+  iter  25500 | train 3.1161 | val 3.1348 | lr 5.27e-04 | 122668 tok/s | hard=66.7% soft=70.3% temp=5.6 sp=23.2121
+  iter  25600 | train 3.1170 | val 3.1468 | lr 5.26e-04 | 122685 tok/s | hard=66.7% soft=70.4% temp=5.6 sp=23.2142
+  iter  25700 | train 3.1165 | val 3.1437 | lr 5.26e-04 | 122707 tok/s | hard=66.7% soft=70.4% temp=5.6 sp=23.2229
+  iter  25800 | train 3.1139 | val 3.1263 | lr 5.25e-04 | 122721 tok/s | hard=67.1% soft=70.4% temp=5.6 sp=23.1961
+  iter  25900 | train 3.1102 | val 3.1308 | lr 5.25e-04 | 122735 tok/s | hard=67.6% soft=70.4% temp=5.7 sp=23.2275
+  iter  26000 | train 3.1254 | val 3.1418 | lr 5.24e-04 | 122755 tok/s | hard=67.6% soft=70.4% temp=5.7 sp=23.2138
+  iter  26100 | train 3.1200 | val 3.1228 | lr 5.23e-04 | 122761 tok/s | hard=67.5% soft=70.4% temp=5.7 sp=23.1810
+  iter  26200 | train 3.1177 | val 3.1314 | lr 5.23e-04 | 122770 tok/s | hard=67.8% soft=70.5% temp=5.7 sp=23.1921
+  iter  26300 | train 3.1163 | val 3.1180 | lr 5.22e-04 | 122773 tok/s | hard=68.2% soft=70.5% temp=5.7 sp=23.1757
+  iter  26400 | train 3.1224 | val 3.1307 | lr 5.22e-04 | 122779 tok/s | hard=68.3% soft=70.6% temp=5.8 sp=23.1960
+  iter  26500 | train 3.1358 | val 3.1361 | lr 5.21e-04 | 122791 tok/s | hard=68.5% soft=70.7% temp=5.8 sp=23.1667
+  iter  26600 | train 3.1156 | val 3.1423 | lr 5.20e-04 | 122803 tok/s | hard=68.6% soft=70.6% temp=5.8 sp=23.1876
+  iter  26700 | train 3.1190 | val 3.1231 | lr 5.20e-04 | 122815 tok/s | hard=68.6% soft=70.6% temp=5.8 sp=23.1681
+  iter  26800 | train 3.1218 | val 3.1283 | lr 5.19e-04 | 122827 tok/s | hard=68.9% soft=70.7% temp=5.8 sp=23.1690
+  iter  26900 | train 3.1194 | val 3.1189 | lr 5.18e-04 | 122835 tok/s | hard=68.8% soft=70.8% temp=5.8 sp=23.1693
+  iter  27000 | train 3.1077 | val 3.1244 | lr 5.18e-04 | 122838 tok/s | hard=68.9% soft=70.7% temp=5.9 sp=23.1690
+  iter  27100 | train 3.1119 | val 3.1369 | lr 5.17e-04 | 122845 tok/s | hard=68.8% soft=70.8% temp=5.9 sp=23.1764
+  iter  27200 | train 3.1125 | val 3.1229 | lr 5.17e-04 | 122857 tok/s | hard=69.0% soft=70.7% temp=5.9 sp=23.1651
+  iter  27300 | train 3.1269 | val 3.1165 | lr 5.16e-04 | 122867 tok/s | hard=69.2% soft=70.8% temp=5.9 sp=23.1416
+  iter  27400 | train 3.1068 | val 3.1095 | lr 5.15e-04 | 122856 tok/s | hard=69.2% soft=70.9% temp=5.9 sp=23.1376
+  iter  27500 | train 3.1107 | val 3.1209 | lr 5.15e-04 | 122856 tok/s | hard=69.2% soft=70.9% temp=5.9 sp=23.1575
+  iter  27600 | train 3.1117 | val 3.1121 | lr 5.14e-04 | 122868 tok/s | hard=69.4% soft=71.0% temp=6.0 sp=23.1484
+  iter  27700 | train 3.1027 | val 3.1276 | lr 5.13e-04 | 122875 tok/s | hard=69.4% soft=70.9% temp=6.0 sp=23.1458
+  iter  27800 | train 3.1092 | val 3.1112 | lr 5.13e-04 | 122882 tok/s | hard=69.4% soft=71.1% temp=6.0 sp=23.1331
+  iter  27900 | train 3.1094 | val 3.1174 | lr 5.12e-04 | 122892 tok/s | hard=69.5% soft=71.1% temp=6.0 sp=23.1407
+  iter  28000 | train 3.1094 | val 3.1197 | lr 5.12e-04 | 122884 tok/s | hard=69.5% soft=71.0% temp=6.0 sp=23.1446
+  iter  28100 | train 3.1130 | val 3.1165 | lr 5.11e-04 | 122879 tok/s | hard=69.6% soft=71.0% temp=6.1 sp=23.1265
+  iter  28200 | train 3.1160 | val 3.1235 | lr 5.10e-04 | 122887 tok/s | hard=69.7% soft=71.1% temp=6.1 sp=23.1378
+  iter  28300 | train 3.1145 | val 3.1142 | lr 5.10e-04 | 122891 tok/s | hard=69.7% soft=71.2% temp=6.1 sp=23.1543
+  iter  28400 | train 3.1158 | val 3.1008 | lr 5.09e-04 | 122901 tok/s | hard=69.8% soft=71.3% temp=6.1 sp=23.1601
+  iter  28500 | train 3.1048 | val 3.1016 | lr 5.08e-04 | 122897 tok/s | hard=69.9% soft=71.3% temp=6.1 sp=23.1380
+  iter  28600 | train 3.1132 | val 3.1290 | lr 5.08e-04 | 122907 tok/s | hard=69.8% soft=71.2% temp=6.1 sp=23.1283
+  iter  28700 | train 3.1058 | val 3.1224 | lr 5.07e-04 | 122914 tok/s | hard=69.8% soft=71.2% temp=6.2 sp=23.1259
+  iter  28800 | train 3.1138 | val 3.1108 | lr 5.06e-04 | 122915 tok/s | hard=69.9% soft=71.3% temp=6.2 sp=23.1215
+  iter  28900 | train 3.1029 | val 3.1161 | lr 5.06e-04 | 122924 tok/s | hard=70.0% soft=71.4% temp=6.2 sp=23.1081
+  iter  29000 | train 3.1019 | val 3.1183 | lr 5.05e-04 | 122933 tok/s | hard=69.9% soft=71.3% temp=6.2 sp=23.1316
+  iter  29100 | train 3.1013 | val 3.1212 | lr 5.04e-04 | 122941 tok/s | hard=70.1% soft=71.5% temp=6.2 sp=23.1255
+  iter  29200 | train 3.0935 | val 3.1080 | lr 5.04e-04 | 122947 tok/s | hard=70.0% soft=71.4% temp=6.3 sp=23.1266
+  iter  29300 | train 3.1139 | val 3.1305 | lr 5.03e-04 | 122946 tok/s | hard=70.1% soft=71.5% temp=6.3 sp=23.1044
+  iter  29400 | train 3.1177 | val 3.1057 | lr 5.02e-04 | 122950 tok/s | hard=70.0% soft=71.5% temp=6.3 sp=23.1129
+  iter  29500 | train 3.0946 | val 3.1161 | lr 5.02e-04 | 122960 tok/s | hard=70.1% soft=71.6% temp=6.3 sp=23.0987
+  iter  29600 | train 3.1001 | val 3.1100 | lr 5.01e-04 | 122968 tok/s | hard=70.2% soft=71.6% temp=6.3 sp=23.0954
+  iter  29700 | train 3.1026 | val 3.1058 | lr 5.00e-04 | 122975 tok/s | hard=70.2% soft=71.7% temp=6.3 sp=23.0732
+  iter  29800 | train 3.1144 | val 3.1241 | lr 5.00e-04 | 122980 tok/s | hard=70.2% soft=71.7% temp=6.4 sp=23.0874
+  iter  29900 | train 3.0999 | val 3.1156 | lr 4.99e-04 | 122985 tok/s | hard=70.2% soft=71.5% temp=6.4 sp=23.0824
+  iter  30000 | train 3.0947 | val 3.1101 | lr 4.98e-04 | 122991 tok/s | hard=70.3% soft=71.6% temp=6.4 sp=23.0781
+  iter  30100 | train 3.1124 | val 3.1213 | lr 4.98e-04 | 122997 tok/s | hard=70.4% soft=71.8% temp=6.4 sp=23.0717
+  iter  30200 | train 3.1053 | val 3.1207 | lr 4.97e-04 | 123003 tok/s | hard=70.4% soft=71.9% temp=6.4 sp=23.0705
+  iter  30300 | train 3.1008 | val 3.0974 | lr 4.96e-04 | 123011 tok/s | hard=70.3% soft=71.9% temp=6.5 sp=23.0869
+  iter  30400 | train 3.1010 | val 3.1136 | lr 4.96e-04 | 123011 tok/s | hard=70.5% soft=71.9% temp=6.5 sp=23.0837
+  iter  30500 | train 3.0967 | val 3.1125 | lr 4.95e-04 | 123018 tok/s | hard=70.4% soft=71.8% temp=6.5 sp=23.0661
+  iter  30600 | train 3.0939 | val 3.1052 | lr 4.94e-04 | 123027 tok/s | hard=70.4% soft=71.9% temp=6.5 sp=23.0618
+  iter  30700 | train 3.0945 | val 3.0991 | lr 4.94e-04 | 123034 tok/s | hard=70.5% soft=72.0% temp=6.5 sp=23.0899
+  iter  30800 | train 3.1123 | val 3.1116 | lr 4.93e-04 | 123040 tok/s | hard=70.4% soft=71.9% temp=6.5 sp=23.0758
+  iter  30900 | train 3.0956 | val 3.1148 | lr 4.92e-04 | 123044 tok/s | hard=70.5% soft=72.0% temp=6.6 sp=23.0472
+  iter  31000 | train 3.0989 | val 3.1135 | lr 4.91e-04 | 123050 tok/s | hard=70.6% soft=72.0% temp=6.6 sp=23.0653
+  iter  31100 | train 3.0952 | val 3.1077 | lr 4.91e-04 | 123055 tok/s | hard=70.6% soft=72.0% temp=6.6 sp=23.0552
+  iter  31200 | train 3.0947 | val 3.1093 | lr 4.90e-04 | 123063 tok/s | hard=70.6% soft=72.1% temp=6.6 sp=23.0687
+  iter  31300 | train 3.0954 | val 3.1208 | lr 4.89e-04 | 123067 tok/s | hard=70.6% soft=72.1% temp=6.6 sp=23.0587
+  iter  31400 | train 3.0997 | val 3.1043 | lr 4.89e-04 | 123071 tok/s | hard=70.7% soft=72.2% temp=6.7 sp=23.0693
+  iter  31500 | train 3.0950 | val 3.1034 | lr 4.88e-04 | 123076 tok/s | hard=70.6% soft=72.2% temp=6.7 sp=23.0784

@@ -1,0 +1,41 @@
+Warning: You are sending unauthenticated requests to the HF Hub. Please set a HF_TOKEN to enable higher rate limits and faster downloads.
+Loaded pruned model: 96,082,176 params, 8 layers
+
+==================================================
+  WikiText-2 Perplexity
+==================================================
+Generating test split:   0%|          | 0/4358 [00:00<?, ? examples/s]Generating test split: 100%|██████████| 4358/4358 [00:00<00:00, 313169.72 examples/s]
+Generating train split:   0%|          | 0/36718 [00:00<?, ? examples/s]Generating train split: 100%|██████████| 36718/36718 [00:00<00:00, 899397.05 examples/s]
+Generating validation split:   0%|          | 0/3760 [00:00<?, ? examples/s]Generating validation split: 100%|██████████| 3760/3760 [00:00<00:00, 640169.80 examples/s]
+  Tokens: 286,177
+    200 chunks, PPL so far: 32799.89
+    400 chunks, PPL so far: 30683.01
+  WikiText-2 PPL: 31995.80
+
+==================================================
+  WikiText-103 Perplexity
+==================================================
+Generating test split:   0%|          | 0/4358 [00:00<?, ? examples/s]Generating test split: 100%|██████████| 4358/4358 [00:00<00:00, 179019.41 examples/s]
+Generating train split:   0%|          | 0/1801350 [00:00<?, ? examples/s]Generating train split:   3%|▎         | 50000/1801350 [00:00<00:03, 460185.33 examples/s]Generating train split:   7%|▋         | 121000/1801350 [00:00<00:02, 594329.68 examples/s]Generating train split:  11%|█         | 194000/1801350 [00:00<00:03, 492997.83 examples/s]Generating train split:  14%|█▍        | 253000/1801350 [00:00<00:02, 522475.14 examples/s]Generating train split:  18%|█▊        | 328000/1801350 [00:00<00:02, 508067.92 examples/s]Generating train split:  22%|██▏       | 388000/1801350 [00:00<00:03, 460807.08 examples/s]Generating train split:  25%|██▍       | 448000/1801350 [00:00<00:02, 493684.97 examples/s]Generating train split:  29%|██▉       | 525000/1801350 [00:01<00:02, 564144.72 examples/s]Generating train split:  33%|███▎      | 589000/1801350 [00:01<00:02, 582426.09 examples/s]Generating train split:  38%|███▊      | 689000/1801350 [00:01<00:01, 696783.24 examples/s]Generating train split:  43%|████▎     | 767000/1801350 [00:01<00:01, 719774.21 examples/s]Generating train split:  47%|████▋     | 843000/1801350 [00:01<00:01, 725913.57 examples/s]Generating train split:  52%|█████▏    | 941675/1801350 [00:01<00:01, 680147.10 examples/s]Generating train split:  57%|█████▋    | 1035675/1801350 [00:01<00:01, 659487.97 examples/s]Generating train split:  62%|██████▏   | 1125675/1801350 [00:01<00:01, 585399.05 examples/s]Generating train split:  67%|██████▋   | 1210675/1801350 [00:02<00:01, 578403.35 examples/s]Generating train split:  71%|███████▏  | 1285675/1801350 [00:02<00:00, 525668.74 examples/s]Generating train split:  75%|███████▌  | 1351675/1801350 [00:02<00:00, 552725.78 examples/s]Generating train split:  79%|███████▉  | 1420675/1801350 [00:02<00:00, 583082.95 examples/s]Generating train split:  84%|████████▍ | 1510675/1801350 [00:02<00:00, 553077.58 examples/s]Generating train split:  88%|████████▊ | 1577675/1801350 [00:02<00:00, 577401.28 examples/s]Generating train split:  91%|█████████▏| 1645675/1801350 [00:02<00:00, 600147.58 examples/s]Generating train split:  97%|█████████▋| 1738675/1801350 [00:02<00:00, 588747.67 examples/s]Generating train split: 100%|██████████| 1801350/1801350 [00:03<00:00, 557226.83 examples/s]Generating train split: 100%|██████████| 1801350/1801350 [00:03<00:00, 577287.33 examples/s]
+Generating validation split:   0%|          | 0/3760 [00:00<?, ? examples/s]Generating validation split: 100%|██████████| 3760/3760 [00:00<00:00, 422871.86 examples/s]
+  Tokens: 286,177
+    200 chunks, PPL so far: 32799.89
+    400 chunks, PPL so far: 30683.01
+  WikiText-103 PPL: 31995.80
+
+==================================================
+  LAMBADA (Accuracy + Perplexity)
+==================================================
+Generating train split:   0%|          | 0/2662 [00:00<?, ? examples/s]Generating train split:  38%|███▊      | 1000/2662 [00:02<00:03, 465.43 examples/s]Generating train split:  88%|████████▊ | 2331/2662 [00:04<00:00, 541.87 examples/s]Generating train split: 100%|██████████| 2662/2662 [00:04<00:00, 640.33 examples/s]Generating train split: 100%|██████████| 2662/2662 [00:04<00:00, 589.63 examples/s]
+Generating test split:   0%|          | 0/5153 [00:00<?, ? examples/s]Generating test split: 100%|██████████| 5153/5153 [00:00<00:00, 722899.48 examples/s]
+Generating validation split:   0%|          | 0/4869 [00:00<?, ? examples/s]Generating validation split: 100%|██████████| 4869/4869 [00:00<00:00, 636221.26 examples/s]
+    1000/5153: acc=0.0000
+    2000/5153: acc=0.0000
+    3000/5153: acc=0.0000
+    4000/5153: acc=0.0000
+    5000/5153: acc=0.0000
+Traceback (most recent call last):
+  File "/tmp/eval_pruned_all.py", line 125, in <module>
+    print(f'  LAMBADA ACC: {results[lambada_acc]:.4f} ({correct}/{total})')
+                                    ^^^^^^^^^^^
+NameError: name 'lambada_acc' is not defined

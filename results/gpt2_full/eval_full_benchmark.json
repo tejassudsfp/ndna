@@ -1,0 +1,14 @@
+{
+  "iter": 49500,
+  "params": 124430946,
+  "wikitext2_ppl": 36.00606673740428,
+  "wikitext103_ppl": 36.00606673740428,
+  "ptb_ppl": null,
+  "lambada_acc": 0.30758781292451,
+  "lambada_ppl": 22.206189778946932,
+  "hellaswag_acc": 0.287293367855009,
+  "cbt_cn_acc": null,
+  "cbt_ne_acc": null,
+  "enwiki8_bpb": 1.3928630189837077,
+  "text8_bpc": 1.2686238682883442
+}

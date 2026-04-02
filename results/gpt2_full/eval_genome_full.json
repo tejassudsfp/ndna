@@ -1,0 +1,11 @@
+{
+  "wikitext2_ppl": 40.73088045600508,
+  "wikitext103_ppl": 40.73088045600508,
+  "lambada_acc": 0.26567048321366193,
+  "lambada_ppl": 30.646894108306526,
+  "hellaswag_acc": 0.2795259908384784,
+  "model": "genome_gpt2_12layer",
+  "params": 124430946,
+  "layers": 12,
+  "training_iters": 20000
+}

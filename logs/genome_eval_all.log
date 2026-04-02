@@ -1,0 +1,63 @@
+Warning: You are sending unauthenticated requests to the HF Hub. Please set a HF_TOKEN to enable higher rate limits and faster downloads.
+Loaded genome model: 124430946 params, 12 layers, temp=4.55
+
+==================================================
+  WikiText-2 Perplexity
+==================================================
+  Tokens: 286177
+    200 chunks, PPL so far: 41.27
+    400 chunks, PPL so far: 40.37
+  WikiText-2 PPL: 40.73
+
+==================================================
+  WikiText-103 Perplexity
+==================================================
+  Tokens: 286177
+    200 chunks, PPL so far: 41.27
+    400 chunks, PPL so far: 40.37
+  WikiText-103 PPL: 40.73
+
+==================================================
+  LAMBADA (Accuracy + Perplexity)
+==================================================
+Generating test split:   0%|          | 0/5153 [00:00<?, ? examples/s]Generating test split: 100%|██████████| 5153/5153 [00:00<00:00, 481600.08 examples/s]
+    1000/5153: acc=0.2640
+    2000/5153: acc=0.2700
+    3000/5153: acc=0.2613
+    4000/5153: acc=0.2620
+    5000/5153: acc=0.2652
+  LAMBADA ACC: 0.2657 (1369/5153)
+  LAMBADA PPL: 30.65
+
+==================================================
+  HellaSwag (zero-shot)
+==================================================
+Generating train split:   0%|          | 0/39905 [00:00<?, ? examples/s]Generating train split:  63%|██████▎   | 25000/39905 [00:00<00:00, 228793.86 examples/s]Generating train split: 100%|██████████| 39905/39905 [00:00<00:00, 195857.90 examples/s]
+Generating test split:   0%|          | 0/10003 [00:00<?, ? examples/s]Generating test split: 100%|██████████| 10003/10003 [00:00<00:00, 167151.21 examples/s]
+Generating validation split:   0%|          | 0/10042 [00:00<?, ? examples/s]Generating validation split: 100%|██████████| 10042/10042 [00:00<00:00, 180072.00 examples/s]
+    1000/10042: acc=0.3420
+    2000/10042: acc=0.3340
+    3000/10042: acc=0.3423
+    4000/10042: acc=0.3212
+    5000/10042: acc=0.3054
+    6000/10042: acc=0.2995
+    7000/10042: acc=0.2921
+    8000/10042: acc=0.2854
+    9000/10042: acc=0.2826
+    10000/10042: acc=0.2799
+  HellaSwag ACC: 0.2795 (2807/10042)
+
+==================================================
+  FINAL RESULTS
+==================================================
+  wikitext2_ppl: 40.7309
+  wikitext103_ppl: 40.7309
+  lambada_acc: 0.2657
+  lambada_ppl: 30.6469
+  hellaswag_acc: 0.2795
+  model: genome_gpt2_12layer
+  params: 124430946
+  layers: 12
+  training_iters: 20000
+
+Saved to eval_genome_full.json

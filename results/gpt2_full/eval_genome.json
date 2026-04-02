@@ -1,0 +1,97 @@
+{
+  "hellaswag_accuracy": 0.2795259908384784,
+  "wikitext103_perplexity": 40.73715717169447,
+  "topology": {
+    "layer_stats": [
+      {
+        "layer": 1,
+        "wo_hard_density": 0.0,
+        "wo_soft_density": 0.01301283948123455,
+        "ff_hard_density": 0.0,
+        "ff_soft_density": 0.013013118878006935
+      },
+      {
+        "layer": 2,
+        "wo_hard_density": 0.0,
+        "wo_soft_density": 0.2213335484266281,
+        "ff_hard_density": 0.0,
+        "ff_soft_density": 0.22136856615543365
+      },
+      {
+        "layer": 3,
+        "wo_hard_density": 0.0,
+        "wo_soft_density": 0.1014590859413147,
+        "ff_hard_density": 0.0,
+        "ff_soft_density": 0.10139882564544678
+      },
+      {
+        "layer": 4,
+        "wo_hard_density": 0.0,
+        "wo_soft_density": 0.1330874115228653,
+        "ff_hard_density": 0.0,
+        "ff_soft_density": 0.1330539435148239
+      },
+      {
+        "layer": 5,
+        "wo_hard_density": 1.0,
+        "wo_soft_density": 0.848242461681366,
+        "ff_hard_density": 1.0,
+        "ff_soft_density": 0.8482432961463928
+      },
+      {
+        "layer": 6,
+        "wo_hard_density": 1.0,
+        "wo_soft_density": 0.9572681784629822,
+        "ff_hard_density": 1.0,
+        "ff_soft_density": 0.957269549369812
+      },
+      {
+        "layer": 7,
+        "wo_hard_density": 1.0,
+        "wo_soft_density": 0.9556289315223694,
+        "ff_hard_density": 1.0,
+        "ff_soft_density": 0.9556289315223694
+      },
+      {
+        "layer": 8,
+        "wo_hard_density": 1.0,
+        "wo_soft_density": 0.9810869693756104,
+        "ff_hard_density": 1.0,
+        "ff_soft_density": 0.9810869693756104
+      },
+      {
+        "layer": 9,
+        "wo_hard_density": 1.0,
+        "wo_soft_density": 0.983160138130188,
+        "ff_hard_density": 1.0,
+        "ff_soft_density": 0.983159601688385
+      },
+      {
+        "layer": 10,
+        "wo_hard_density": 1.0,
+        "wo_soft_density": 0.9854035973548889,
+        "ff_hard_density": 1.0,
+        "ff_soft_density": 0.985403835773468
+      },
+      {
+        "layer": 11,
+        "wo_hard_density": 1.0,
+        "wo_soft_density": 0.9895718693733215,
+        "ff_hard_density": 1.0,
+        "ff_soft_density": 0.9895718693733215
+      },
+      {
+        "layer": 12,
+        "wo_hard_density": 1.0,
+        "wo_soft_density": 0.9941654205322266,
+        "ff_hard_density": 1.0,
+        "ff_soft_density": 0.9941654205322266
+      }
+    ],
+    "genome_params": 354,
+    "total_connections": 35389440,
+    "active_connections": 23592960,
+    "hard_density": 0.6666666666666666,
+    "soft_density": 0.6802812649695962
+  }
+}

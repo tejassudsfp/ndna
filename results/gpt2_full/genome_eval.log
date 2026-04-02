@@ -1,0 +1,86 @@
+  Device: cuda
+  Loading checkpoint: results/gpt2_full/genome_ckpt.pt
+  Model: genome
+  Params: 124,430,946
+
+  HellaSwag zero-shot evaluation
+  Loading dataset...
+Warning: You are sending unauthenticated requests to the HF Hub. Please set a HF_TOKEN to enable higher rate limits and faster downloads.
+Generating train split:   0%|          | 0/39905 [00:00<?, ? examples/s]Generating train split:  55%|█████▌    | 22000/39905 [00:00<00:00, 209771.93 examples/s]Generating train split: 100%|██████████| 39905/39905 [00:00<00:00, 189168.35 examples/s]
+Generating test split:   0%|          | 0/10003 [00:00<?, ? examples/s]Generating test split: 100%|██████████| 10003/10003 [00:00<00:00, 159486.45 examples/s]
+Generating validation split:   0%|          | 0/10042 [00:00<?, ? examples/s]Generating validation split: 100%|██████████| 10042/10042 [00:00<00:00, 148568.61 examples/s]
+    500/10042: accuracy=0.3420
+    1000/10042: accuracy=0.3420
+    1500/10042: accuracy=0.3427
+    2000/10042: accuracy=0.3340
+    2500/10042: accuracy=0.3396
+    3000/10042: accuracy=0.3423
+    3500/10042: accuracy=0.3369
+    4000/10042: accuracy=0.3212
+    4500/10042: accuracy=0.3164
+    5000/10042: accuracy=0.3054
+    5500/10042: accuracy=0.3007
+    6000/10042: accuracy=0.2995
+    6500/10042: accuracy=0.2971
+    7000/10042: accuracy=0.2921
+    7500/10042: accuracy=0.2877
+    8000/10042: accuracy=0.2854
+    8500/10042: accuracy=0.2840
+    9000/10042: accuracy=0.2826
+    9500/10042: accuracy=0.2808
+    10000/10042: accuracy=0.2799
+
+  HellaSwag accuracy: 0.2795 (2807/10042)
+
+  WikiText-103 perplexity evaluation
+  Loading dataset...
+Generating test split:   0%|          | 0/4358 [00:00<?, ? examples/s]Generating test split: 100%|██████████| 4358/4358 [00:00<00:00, 310298.89 examples/s]
+Generating train split:   0%|          | 0/1801350 [00:00<?, ? examples/s]Generating train split:   2%|▏         | 32000/1801350 [00:00<00:06, 291776.40 examples/s]Generating train split:   5%|▍         | 83000/1801350 [00:00<00:04, 413934.54 examples/s]Generating train split:   8%|▊         | 137000/1801350 [00:00<00:03, 469525.05 examples/s]Generating train split:  11%|█         | 194000/1801350 [00:00<00:03, 446505.12 examples/s]Generating train split:  14%|█▎        | 245000/1801350 [00:00<00:03, 460524.18 examples/s]Generating train split:  17%|█▋        | 300000/1801350 [00:00<00:03, 485533.43 examples/s]Generating train split:  20%|█▉        | 355000/1801350 [00:00<00:02, 501890.85 examples/s]Generating train split:  23%|██▎       | 412000/1801350 [00:00<00:03, 449469.92 examples/s]Generating train split:  26%|██▌       | 463000/1801350 [00:01<00:02, 461760.40 examples/s]Generating train split:  29%|██▊       | 514000/1801350 [00:01<00:02, 473284.99 examples/s]Generating train split:  31%|███▏      | 563000/1801350 [00:01<00:02, 473257.23 examples/s]Generating train split:  35%|███▌      | 639000/1801350 [00:01<00:02, 460742.82 examples/s]Generating train split:  38%|███▊      | 692000/1801350 [00:01<00:02, 476309.28 examples/s]Generating train split:  41%|████      | 743000/1801350 [00:01<00:02, 482980.05 examples/s]Generating train split:  45%|████▍     | 808000/1801350 [00:01<00:02, 459386.22 examples/s]Generating train split:  48%|████▊     | 864000/1801350 [00:01<00:01, 481607.02 examples/s]Generating train split:  52%|█████▏    | 928675/1801350 [00:02<00:02, 433883.98 examples/s]Generating train split:  55%|█████▍    | 989675/1801350 [00:02<00:01, 474417.38 examples/s]Generating train split:  59%|█████▊    | 1054675/1801350 [00:02<00:01, 513848.66 examples/s]Generating train split:  64%|██████▍   | 1153675/1801350 [00:02<00:01, 527784.95 examples/s]Generating train split:  70%|██████▉   | 1256675/1801350 [00:02<00:00, 644442.60 examples/s]Generating train split:  74%|███████▍  | 1338675/1801350 [00:02<00:00, 671416.31 examples/s]Generating train split:  78%|███████▊  | 1410675/1801350 [00:02<00:00, 683204.86 examples/s]Generating train split:  83%|████████▎ | 1491675/1801350 [00:02<00:00, 628753.93 examples/s]Generating train split:  88%|████████▊ | 1587675/1801350 [00:03<00:00, 628531.98 examples/s]Generating train split:  93%|█████████▎| 1669675/1801350 [00:03<00:00, 590550.39 examples/s]Generating train split:  96%|█████████▌| 1732675/1801350 [00:03<00:00, 599501.54 examples/s]Generating train split: 100%|██████████| 1801350/1801350 [00:03<00:00, 572820.13 examples/s]Generating train split: 100%|██████████| 1801350/1801350 [00:03<00:00, 525841.50 examples/s]
+Generating validation split:   0%|          | 0/3760 [00:00<?, ? examples/s]Generating validation split: 100%|██████████| 3760/3760 [00:00<00:00, 449445.21 examples/s]
+  Test set: 286,177 tokens
+    chunks processed: 100, perplexity so far: 44.20
+    chunks processed: 200, perplexity so far: 41.27
+    chunks processed: 300, perplexity so far: 39.66
+    chunks processed: 400, perplexity so far: 40.37
+    chunks processed: 500, perplexity so far: 40.55
+
+  WikiText-103 perplexity: 40.74
+
+  Topology analysis
+    GPT-2 connectivity per layer:
+      L 1 W_o:  0.0% hard, avg=0.013  |  FF1:  0.0% hard, avg=0.013
+      L 2 W_o:  0.0% hard, avg=0.221  |  FF1:  0.0% hard, avg=0.221
+      L 3 W_o:  0.0% hard, avg=0.101  |  FF1:  0.0% hard, avg=0.101
+      L 4 W_o:  0.0% hard, avg=0.133  |  FF1:  0.0% hard, avg=0.133
+      L 5 W_o: 100.0% hard, avg=0.848  |  FF1: 100.0% hard, avg=0.848
+      L 6 W_o: 100.0% hard, avg=0.957  |  FF1: 100.0% hard, avg=0.957
+      L 7 W_o: 100.0% hard, avg=0.956  |  FF1: 100.0% hard, avg=0.956
+      L 8 W_o: 100.0% hard, avg=0.981  |  FF1: 100.0% hard, avg=0.981
+      L 9 W_o: 100.0% hard, avg=0.983  |  FF1: 100.0% hard, avg=0.983
+      L10 W_o: 100.0% hard, avg=0.985  |  FF1: 100.0% hard, avg=0.985
+      L11 W_o: 100.0% hard, avg=0.990  |  FF1: 100.0% hard, avg=0.990
+      L12 W_o: 100.0% hard, avg=0.994  |  FF1: 100.0% hard, avg=0.994
+
+  Per-layer density summary:
+   Layer   W_o hard   W_o soft   FF1 hard   FF1 soft
+  --------------------------------------------------
+       1       0.0%      0.013       0.0%      0.013
+       2       0.0%      0.221       0.0%      0.221
+       3       0.0%      0.101       0.0%      0.101
+       4       0.0%      0.133       0.0%      0.133
+       5     100.0%      0.848     100.0%      0.848
+       6     100.0%      0.957     100.0%      0.957
+       7     100.0%      0.956     100.0%      0.956
+       8     100.0%      0.981     100.0%      0.981
+       9     100.0%      0.983     100.0%      0.983
+      10     100.0%      0.985     100.0%      0.985
+      11     100.0%      0.990     100.0%      0.990
+      12     100.0%      0.994     100.0%      0.994
+
+  Genome params: 354
+  Total masked connections: 35,389,440
+  Active connections (>0.5): 23,592,960 (66.7%)
+  Soft density: 0.6803
+  Compression: 99,970:1
+
+  Evaluation results saved to results/gpt2_full/eval_genome.json
